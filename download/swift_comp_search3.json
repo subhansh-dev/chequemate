@@ -1,0 +1,92 @@
+[
+  {
+    "url": "https://developer.apple.com/swift-student-challenge",
+    "name": "Swift Student Challenge",
+    "snippet": "Dream, draft, and organize ideas for your submission, Get up to speed on the requirements to apply . Learn more about the eligibility requirements\nSwift Student Challenge winners will be selected based on submissions that demonstrate excellence in innovation, creativity, social impact, or inclusivity. From ... Read more",
+    "host_name": "developer.apple.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://apps.apple.com/us/app/swift-playground/id908519492",
+    "name": "Swift Playgrounds - App Store",
+    "snippet": "Swift Playground doesn't require any coding experience — it's perfect for anyone just starting out, the iOS 26 SDK, along with bug fixes and improved stability ...\nSwift Playground makes it fun to learn to code and build real apps. You solve interactive puzzles in the guided “Get Started with Code” and learn the basics ... Read more",
+    "host_name": "apps.apple.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.facebook.com/groups/572667429453561/posts/24310721691888135",
+    "name": "The submission window for the Swift Student Challenge",
+    "snippet": "The submission window for the Swift Student Challenge will open on February 1, 2026 , and close on February 23, 2026 . Be 13 years of age or ...\nThe submission window for the Swift Student Challenge will open on February 1, 2026, and close on February 23, 2026. Be 13 years of age or ...",
+    "host_name": "www.facebook.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://developer.apple.com/news/upcoming-requirements",
+    "name": "Upcoming Requirements",
+    "snippet": "SDK minimum requirements . Since April 28, 2026 ; Age Rating Updates. Since January 31, 2026 ; APNs Certificate Update. Since February 24, 2025 ; Quarantine ... Read more",
+    "host_name": "developer.apple.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.reddit.com/r/swift/comments/1rpyy0k/does_swift_playground_generally_update_the_spk_to",
+    "name": "Does Swift Playground generally update the SPK to be in",
+    "snippet": "Hey all,\n\nNew developer here getting my feet wet. I've been using Swift Playground to develop my app and just uploaded it to TestFlight for review/testing. ...",
+    "host_name": "www.reddit.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://itbrief.com.au/story/apple-opens-2026-swift-student-challenge-to-global-coders",
+    "name": "Apple opens 2026 Swift Student Challenge to global coders",
+    "snippet": "Feb 16, 2026 — Participants must submit an app playground built in Swift Playground or Xcode that can be experienced within three minutes. Apple requires all ...",
+    "host_name": "itbrief.com.au",
+    "rank": 5,
+    "date": "Feb 16, 2026",
+    "favicon": ""
+  },
+  {
+    "url": "https://origin-devforums.apple.com/forums/thread/816935",
+    "name": "Swift Student Challenge 2026 submission format",
+    "snippet": "Feb 26, 2026 — Your submission must be an app playground ( .swiftpm ) in a ZIP file. you will have to raise your deployment target to iOS 26. you will have to ...",
+    "host_name": "origin-devforums.apple.com",
+    "rank": 6,
+    "date": "Feb 26, 2026",
+    "favicon": ""
+  },
+  {
+    "url": "https://education.apple.com/tag/app-development",
+    "name": "App Development",
+    "snippet": "Get ready! Submissions for the Swift Student Challenge will be open February 6–28, 2026 . The Challenge offers students an opportunity to showcase their ... Read more",
+    "host_name": "education.apple.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.reddit.com/r/swift/comments/1ifeyey/whats_everyone_working_on_this_month_february_2025",
+    "name": "What's everyone working on this month? (February 2025)",
+    "snippet": "What Swift-related projects are you currently working on?",
+    "host_name": "www.reddit.com",
+    "rank": 8,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://commitstudiogs.medium.com/the-rise-of-swift-playgrounds-5-can-you-build-full-apps-on-ipad-now-a341a4d1065b",
+    "name": "The Rise of Swift Playgrounds 5: Can You Build Full Apps on",
+    "snippet": "Submit to the App Store Yes, Now you can code your app directly to the App Store from your iPad — no Mac required . With Swift Playgrounds 5, ...",
+    "host_name": "commitstudiogs.medium.com",
+    "rank": 9,
+    "date": "",
+    "favicon": ""
+  }
+]
