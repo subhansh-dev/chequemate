@@ -1,6 +1,6 @@
 @echo off
 cd /d C:\Users\Admin\Desktop\huewaves
 git add -A
-git commit -m "Add GitHub Actions CI for iOS compilation"
+git commit -m "Fix Package.swift encoding and tools version"
 git push
 del %0

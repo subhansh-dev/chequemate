@@ -27,4 +27,7 @@ jobs:
       - name: Build Swift Package
         run: |
           cd download/huewaves.swiftpm
-          swift build 2>&1 || xcodebuild build -scheme Huewaves -destination "platform=iOS Simulator,name=iPhone 16" -quiet CODE_SIGNING_ALLOWED=NO 2>&1
+          xcodebuild build \
+            -scheme Huewaves \
+            -destination "platform=iOS Simulator,name=iPhone 16" \
+            CODE_SIGNING_ALLOWED=NO 2>&1

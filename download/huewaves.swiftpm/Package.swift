@@ -1,14 +1,14 @@
-﻿// swift-tools-version: 6.0
+﻿// swift-tools-version: 6.3
 import PackageDescription
 
 let package = Package(
     name: "Huewaves",
     platforms: [.iOS(.v26)],
     products: [
-        .executableProduct(name: "Huewaves", targets: ["Huewaves"])
+        .library(name: "Huewaves", targets: ["Huewaves"])
     ],
     targets: [
-        .executableTarget(
+        .target(
             name: "Huewaves",
             path: "Sources"
         )
