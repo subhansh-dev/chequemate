@@ -21,13 +21,17 @@ jobs:
         with:
           xcode-version: latest-stable
 
-      - name: Show Xcode version
-        run: xcodebuild -version
+      - name: Show Xcode version and schemes
+        run: |
+          xcodebuild -version
+          cd download/huewaves.swiftpm
+          xcodebuild -list
 
-      - name: Build Swift Package
+      - name: Build for iOS Simulator
         run: |
           cd download/huewaves.swiftpm
           xcodebuild build \
             -scheme Huewaves \
-            -destination "platform=iOS Simulator,name=iPhone 16" \
+            -destination "platform=iOS Simulator,name=iPhone 17" \
+            -configuration Debug \
             CODE_SIGNING_ALLOWED=NO 2>&1

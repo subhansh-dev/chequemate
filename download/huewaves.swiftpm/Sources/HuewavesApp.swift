@@ -30,6 +30,16 @@ extension Color {
     static let glassEdge = Color.white.opacity(0.12)
 }
 
+extension ShapeStyle where Self == Color {
+    static var spectrumTeal: Color { Color.spectrumTeal }
+    static var spectrumAqua: Color { Color.spectrumAqua }
+    static var spectrumRose: Color { Color.spectrumRose }
+    static var glassFill: Color { Color.glassFill }
+    static var glassEdge: Color { Color.glassEdge }
+    static var obsidian: Color { Color.obsidian }
+    static var obsidianDeep: Color { Color.obsidianDeep }
+}
+
 // MARK: - App Entry Point
 
 @main
@@ -568,7 +578,7 @@ struct CameraHuePreview: UIViewRepresentable {
     }
 
     func makeCoordinator() -> Coordinator {
-        Coordinator(hue: hue, live: isLive)
+        Coordinator(hue: $hue, live: $isLive)
     }
 
     func makeUIView(context: Context) -> UIView {
@@ -802,11 +812,10 @@ struct SoundToVisualView: View {
         time += 0.05
         withAnimation(.easeOut(duration: 0.08)) {
             for i in 0..<audioLevels.count {
-                audioLevels[i] = Float(
-                    sin(time * 3 + Double(i) * 0.4) * 0.4 +
-                        sin(time * 5 + Double(i) * 0.7) * 0.3 +
-                        Float.random(in: 0...0.3)
-                )
+                let s1 = sin(time * 3 + Double(i) * 0.4) * 0.4
+                let s2 = sin(time * 5 + Double(i) * 0.7) * 0.3
+                let r = Float.random(in: 0...0.3)
+                audioLevels[i] = Float(s1 + s2 + r)
                 audioLevels[i] = max(0.05, min(1, audioLevels[i]))
             }
         }
@@ -818,7 +827,7 @@ struct SoundToVisualView: View {
             return
         }
         switch AVCaptureDevice.authorizationStatus(for: .audio) {
-        case .authorized, .limited:
+        case .authorized:
             mic.start()
         case .notDetermined:
             AVCaptureDevice.requestAccess(for: .audio) { granted in
@@ -1103,7 +1112,7 @@ final class HapticsController: ObservableObject {
         guard let pattern else { return }
         do {
             let newPlayer = try engine.makePlayer(with: pattern)
-            try player?.stop()
+            try player?.stop(atTime: 0)
             player = newPlayer
             try player?.start(atTime: CHHapticTimeImmediate)
             isActive = true
@@ -1113,7 +1122,7 @@ final class HapticsController: ObservableObject {
     }
 
     func stop() {
-        try? player?.stop()
+        try? player?.stop(atTime: 0)
         player = nil
         isActive = false
     }
@@ -1137,15 +1146,18 @@ final class SynthAudioEngine: ObservableObject {
         let frames = AVAudioFrameCount(format.sampleRate * 1.5)
         guard let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frames) else { return }
         buffer.frameLength = frames
-        guard let channels = buffer.floatChannelData, let mono = channels.first else { return }
+        guard let channels = buffer.floatChannelData else { return }
+        let mono = channels[0]
+        let channelCount = Int(buffer.format.channelCount)
 
         for i in 0..<Int(frames) {
             let t = Float(i) / sampleRate
             mono[i] = sinf(2.0 * .pi * frequency * t) * 0.35
         }
-        if channels.count > 1 {
+        if channelCount > 1 {
+            let stereo = channels[1]
             for i in 0..<Int(frames) {
-                channels[1][i] = channels[0][i]
+                stereo[i] = mono[i]
             }
         }
 
