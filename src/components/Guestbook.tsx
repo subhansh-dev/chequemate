@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useCallback, useEffect, useState } from "react"
 import { Star, Send, RefreshCw, PenLine } from "lucide-react"
@@ -120,7 +120,7 @@ export function Guestbook() {
             </div>
             <div>
               <h3 className="text-lg font-bold text-ink">Leave a note</h3>
-              <p className="text-sm text-muted-ink">Tell the makers what synesthesia felt like.</p>
+              <p className="text-sm text-muted-ink">Tell the makers what Huewaves felt like.</p>
             </div>
           </div>
 

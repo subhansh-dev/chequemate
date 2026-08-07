@@ -1,15 +1,15 @@
-// swift-tools-version: 6.0
+﻿// swift-tools-version: 6.0
 import PackageDescription
 
 let package = Package(
-    name: "Synesthesia",
+    name: "Huewaves",
     platforms: [.iOS(.v26)],
     products: [
-        .executableProduct(name: "Synesthesia", targets: ["Synesthesia"])
+        .executableProduct(name: "Huewaves", targets: ["Huewaves"])
     ],
     targets: [
         .executableTarget(
-            name: "Synesthesia",
+            name: "Huewaves",
             path: "Sources"
         )
     ]

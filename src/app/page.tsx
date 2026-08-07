@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence, useScroll } from 'framer-motion'
@@ -93,7 +93,7 @@ function Nav({ active }: { active: string }) {
     <nav className="navbar" aria-label="Primary">
       <a href="#top" className="nav-logo" data-hover>
         <span className="glyph">S</span>
-        <span className="hidden sm:inline text-[15px]">Synesthesia</span>
+        <span className="hidden sm:inline text-[15px]">Huewaves</span>
       </a>
       <div className="nav-links">
         {SECTIONS.map((s) => (
@@ -478,7 +478,7 @@ function SynestheticCanvas() {
         }}
         onTouchEnd={stopInteraction}
         role="application"
-        aria-label="Interactive synesthesia canvas — drag to paint colors that produce sound"
+        aria-label="Interactive Huewaves canvas — drag to paint colors that produce sound"
       >
         <canvas ref={canvasRef} className="w-full h-full" />
         {!isActive && (
@@ -763,7 +763,7 @@ import AVFoundation
 import CoreHaptics
 
 // ═══════════════════════════════════════
-//  Synesthesia — See → Hear → Feel
+//  Huewaves — See → Hear → Feel
 // ═══════════════════════════════════════
 
 extension Color {
@@ -847,7 +847,7 @@ func binLevels(_ buffer: AVAudioPCMBuffer, count: Int) -> [Float] {
           <span />
           <span />
         </div>
-        <span className="ml-2 text-xs text-faint-ink font-mono tracking-wide">SynesthesiaApp.swift</span>
+        <span className="ml-2 text-xs text-faint-ink font-mono tracking-wide">HuewavesApp.swift</span>
         <span className="ml-auto hidden sm:inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-teal">
           <span className="led" /> swift 6 · swiftui
         </span>
@@ -935,7 +935,7 @@ export default function Home() {
     {
       icon: Sparkles,
       title: 'Creativity',
-      desc: 'A sunset becomes a musical chord. A song becomes a painting. A conversation becomes a dance of light. Synesthesia transforms everyday moments into art.',
+      desc: 'A sunset becomes a musical chord. A song becomes a painting. A conversation becomes a dance of light. Huewaves transforms everyday moments into art.',
     },
   ]
 
@@ -953,7 +953,7 @@ export default function Home() {
     { time: '0:05', title: 'See → Hear Mode', desc: "Point camera at a flower. Instantly hear a gentle chord. Move to a red wall — the sound deepens. You're hearing color.", icon: ScanEye },
     { time: '1:00', title: 'Hear → See Mode', desc: 'Switch modes. Clap your hands — watch particles explode. Play music — see a living painting form. Sound has shape.', icon: AudioLines },
     { time: '2:00', title: 'Feel Mode', desc: "Enable haptics. A bass drop thumps your palm. A melody traces patterns on your fingers. You're touching sound.", icon: Hand },
-    { time: '2:45', title: 'The Moment', desc: "Combine all three. Point at a sunset, hear its chord, see it shimmer, feel its warmth. You have synesthesia. You understand.", icon: Sparkles },
+    { time: '2:45', title: 'The Moment', desc: "Combine all three. Point at a sunset, hear its chord, see it shimmer, feel its warmth. You have Huewaves. You understand.", icon: Sparkles },
   ]
 
 
@@ -992,7 +992,7 @@ export default function Home() {
             transition={{ duration: 0.8, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
             className="mt-8 text-[17vw] sm:text-7xl md:text-8xl lg:text-[8.5rem] font-black tracking-tight leading-[0.92]"
           >
-            <span className="spectral-text drop-shadow-[0_0_60px_rgba(212,168,83,0.18)]">Synesthesia</span>
+            <span className="spectral-text drop-shadow-[0_0_60px_rgba(212,168,83,0.18)]">Huewaves</span>
           </motion.h1>
 
           <motion.p
@@ -1212,7 +1212,7 @@ export default function Home() {
             index="03"
             tag="Why this wins"
             title="Excellence across every criterion"
-            desc="Apple judges on innovation, creativity, social impact, and inclusivity. Synesthesia delivers on all four."
+            desc="Apple judges on innovation, creativity, social impact, and inclusivity. Huewaves delivers on all four."
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -1361,7 +1361,7 @@ export default function Home() {
             index="08"
             tag="Leave feedback"
             title="How did it feel?"
-            desc="Judges, reviewers, and the simply curious — drop a note in the synesthesia guestbook."
+            desc="Judges, reviewers, and the simply curious — drop a note in the Huewaves guestbook."
           />
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -1382,7 +1382,7 @@ export default function Home() {
             <div className="relative z-[2]">
               <div className="flex items-center justify-center gap-3 mb-4">
                 <span className="glyph w-9! h-9! text-lg!">S</span>
-                <span className="text-2xl font-bold spectral-text">Synesthesia</span>
+                <span className="text-2xl font-bold spectral-text">Huewaves</span>
               </div>
               <p className="text-sm text-muted-ink mb-1">Swift Student Challenge Submission · 2026</p>
               <p className="text-xs text-faint-ink max-w-xl mx-auto">

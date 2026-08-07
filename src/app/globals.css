@@ -1,4 +1,4 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
@@ -54,7 +54,7 @@
 }
 
 /* ─────────────────────────────────────────────
-   SYNESTHESIA · OBSIDIAN GLASS DESIGN SYSTEM
+   Huewaves · OBSIDIAN GLASS DESIGN SYSTEM
    Two-pole spectrum: teal (sight) → rose (touch)
    ───────────────────────────────────────────── */
 :root {

@@ -1,4 +1,4 @@
-import type { Metadata, Viewport } from "next";
+﻿import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
@@ -26,11 +26,11 @@ const APP_ICON = `data:image/svg+xml,${encodeURIComponent(
 )}`;
 
 export const metadata: Metadata = {
-  title: "Synesthesia — Hear Colors. See Sound. Feel Music.",
+  title: "Huewaves — Hear Colors. See Sound. Feel Music.",
   description:
     "An iOS app that turns the world into music — point your camera at a color and hear it as a note, listen as sound becomes light, and feel rhythms through Core Haptics. Swift Student Challenge 2026.",
   keywords: [
-    "Synesthesia",
+    "Huewaves",
     "Swift Student Challenge",
     "iOS",
     "SwiftUI",
@@ -40,26 +40,26 @@ export const metadata: Metadata = {
     "accessibility",
   ],
   authors: [{ name: "Subhansh" }],
-  applicationName: "Synesthesia",
+  applicationName: "Huewaves",
   icons: {
     icon: APP_ICON,
     apple: APP_ICON,
   },
   appleWebApp: {
     capable: true,
-    title: "Synesthesia",
+    title: "Huewaves",
     statusBarStyle: "black-translucent",
   },
   openGraph: {
-    title: "Synesthesia — Hear Colors. See Sound. Feel Music.",
+    title: "Huewaves — Hear Colors. See Sound. Feel Music.",
     description:
       "An iOS app that turns the world into music — see colors, hear notes, and feel rhythms through real camera, microphone, and Core Haptics. Swift Student Challenge 2026.",
     type: "website",
-    siteName: "Synesthesia",
+    siteName: "Huewaves",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Synesthesia — Hear Colors. See Sound. Feel Music.",
+    title: "Huewaves — Hear Colors. See Sound. Feel Music.",
     description:
       "Cross-sensory AI for iOS: see sound, hear color, feel music.",
   },
@@ -81,7 +81,7 @@ export default function RootLayout({
     <html lang="en" className="dark" suppressHydrationWarning>
       <head>
         <meta name="format-detection" content="telephone=no" />
-        <meta name="apple-mobile-web-app-title" content="Synesthesia" />
+        <meta name="apple-mobile-web-app-title" content="Huewaves" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
       </head>
       <body

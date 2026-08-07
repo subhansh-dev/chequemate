@@ -1,22 +1,22 @@
-# Synesthesia
+﻿# Huewaves
 
 An iOS app that turns the world around you into music.
 
-**Swift Student Challenge 2026 submission** — built entirely in SwiftUI with Apple-native frameworks only.
+**Swift Student Challenge 2026 submission** â€” built entirely in SwiftUI with Apple-native frameworks only.
 
 ## What it does
 
-- **See → Hear** — Point your camera at any color and hear it as a unique musical note
-- **Hear → See** — Capture any sound and watch it transform into living particle art  
-- **Feel → Move** — Your heartbeat becomes haptic patterns and rhythmic visuals
+- **See â†’ Hear** â€” Point your camera at any color and hear it as a unique musical note
+- **Hear â†’ See** â€” Capture any sound and watch it transform into living particle art  
+- **Feel â†’ Move** â€” Your heartbeat becomes haptic patterns and rhythmic visuals
 
 ## Tech stack
 
-- **SwiftUI** — the entire UI
-- **AVFoundation** — real camera hue reading + live microphone analysis
-- **Core Haptics** — heartbeat, rain, ocean, rhythm patterns
-- **12-TET** — hue-to-frequency mapping
-- **Obsidian glass** — dark warm aesthetic with gold + rose accents
+- **SwiftUI** â€” the entire UI
+- **AVFoundation** â€” real camera hue reading + live microphone analysis
+- **Core Haptics** â€” heartbeat, rain, ocean, rhythm patterns
+- **12-TET** â€” hue-to-frequency mapping
+- **Obsidian glass** â€” dark warm aesthetic with gold + rose accents
 
 ## Getting started
 
@@ -28,13 +28,13 @@ An iOS app that turns the world around you into music.
 
 ```
 apple/
-├── download/Synesthesia.swiftpm/   # iOS app source (Swift)
-├── src/                             # Landing page (Next.js)
-│   ├── app/page.tsx                 # Main landing page
-│   ├── app/globals.css              # Design system
-│   └── components/Guestbook.tsx     # Feedback form
-├── prisma/                          # Database schema
-└── public/                          # Static assets
+â”œâ”€â”€ download/Huewaves.swiftpm/   # iOS app source (Swift)
+â”œâ”€â”€ src/                             # Landing page (Next.js)
+â”‚   â”œâ”€â”€ app/page.tsx                 # Main landing page
+â”‚   â”œâ”€â”€ app/globals.css              # Design system
+â”‚   â””â”€â”€ components/Guestbook.tsx     # Feedback form
+â”œâ”€â”€ prisma/                          # Database schema
+â””â”€â”€ public/                          # Static assets
 ```
 
 ## Running locally
@@ -47,4 +47,4 @@ npm run dev
 
 ## License
 
-Made by Subhansh — [subhansh.dev](https://subhansh.dev)
+Made by Subhansh â€” [subhansh.dev](https://subhansh.dev)

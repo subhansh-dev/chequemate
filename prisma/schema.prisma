@@ -1,4 +1,4 @@
-generator client {
+﻿generator client {
   provider = "prisma-client-js"
 }
 
@@ -7,7 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Feedback left by judges, reviewers, and visitors of the synesthesia
+// Feedback left by judges, reviewers, and visitors of the Huewaves
 // experience — searchable, rateable notes on the landing page.
 model Feedback {
   id        String   @id @default(cuid())

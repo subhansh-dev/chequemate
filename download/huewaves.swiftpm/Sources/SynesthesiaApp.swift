@@ -1,5 +1,5 @@
-// ═══════════════════════════════════════════════════════════════
-//  SYNESTHESIA — Hear Colors. See Sound. Feel Music.
+﻿// ═══════════════════════════════════════════════════════════════
+//  Huewaves — Hear Colors. See Sound. Feel Music.
 //  Swift Student Challenge Submission
 //
 //  Turn the world around you into music. Point the camera at a
@@ -33,7 +33,7 @@ extension Color {
 // MARK: - App Entry Point
 
 @main
-struct SynesthesiaApp: App {
+struct HuewavesApp: App {
     @StateObject private var appState = AppState()
 
     var body: some Scene {
@@ -449,7 +449,7 @@ struct CameraHuePreview: UIViewRepresentable {
 
     final class Coordinator: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         private let session = AVCaptureSession()
-        private let queue = DispatchQueue(label: "synesthesia.camera.queue")
+        private let queue = DispatchQueue(label: "Huewaves.camera.queue")
         private var hueBinding: Binding<Double>?
         private var liveBinding: Binding<Bool>?
         var previewLayer: AVCaptureVideoPreviewLayer?
