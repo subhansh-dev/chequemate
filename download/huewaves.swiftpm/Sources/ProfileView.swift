@@ -1,5 +1,4 @@
 import SwiftUI
-import Supabase
 
 // MARK: - Profile View
 
@@ -52,16 +51,16 @@ struct ProfileView: View {
     }
 
     private var initials: String {
-        let email = appState.currentUser?.email ?? "?"
+        let email = appState.currentUser?.email ?? "guest"
         return String(email.prefix(1)).uppercased()
     }
 
     private var displayName: String {
-        appState.currentUser?.email?.components(separatedBy: "@").first?.capitalized ?? "User"
+        appState.currentUser?.email?.components(separatedBy: "@").first?.capitalized ?? "Guest"
     }
 
     private var email: String {
-        appState.currentUser?.email ?? ""
+        appState.currentUser?.email ?? "guest@huewaves.app"
     }
 
     private var statsCard: some View {
@@ -93,10 +92,8 @@ struct ProfileView: View {
 
     private func signOut() {
         isLoading = true
-        Task {
-            try? await supabase.auth.signOut()
-            isLoading = false
-        }
+        appState.signOut()
+        isLoading = false
     }
 }
 

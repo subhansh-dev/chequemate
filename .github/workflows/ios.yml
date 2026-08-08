@@ -15,25 +15,16 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
 
       - name: Select Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: latest-stable
 
-      - name: Show Package.swift
-        run: |
-          cat download/huewaves.swiftpm/Package.swift
+      - name: Show Xcode version
+        run: xcodebuild -version
 
-      - name: Clean and resolve
-        run: |
-          cd download/huewaves.swiftpm
-          rm -rf .build
-          swift package resolve 2>&1
-
-      - name: Build for iOS Simulator
+      - name: Build Swift Package
         run: |
           cd download/huewaves.swiftpm
           swift build -c debug 2>&1

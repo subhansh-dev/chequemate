@@ -1,5 +1,4 @@
 import SwiftUI
-import Supabase
 
 // MARK: - Auth View Model
 
@@ -21,7 +20,8 @@ final class AuthViewModel: ObservableObject {
         defer { isLoading = false }
 
         do {
-            try await supabase.auth.signIn(email: email, password: password)
+            let service = LocalAuthService()
+            try await service.signIn(email: email, password: password)
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -37,10 +37,8 @@ final class AuthViewModel: ObservableObject {
         defer { isLoading = false }
 
         do {
-            let response = try await supabase.auth.signUp(email: email, password: password)
-            if response.user != nil {
-                showCheckEmail = true
-            }
+            let service = LocalAuthService()
+            try await service.signUp(email: email, password: password)
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -56,24 +54,19 @@ final class AuthViewModel: ObservableObject {
         defer { isLoading = false }
 
         do {
-            try await supabase.auth.signInWithOTP(
-                email: email,
-                redirectTo: URL(string: "huewaves://auth-callback")
-            )
+            let service = LocalAuthService()
+            try await service.signInWithMagicLink(email: email)
             showCheckEmail = true
         } catch {
             errorMessage = error.localizedDescription
         }
-    }
-
-    func signOut() async {
-        try? await supabase.auth.signOut()
     }
 }
 
 // MARK: - Auth View
 
 struct AuthView: View {
+    @EnvironmentObject var appState: AppState
     @StateObject private var vm = AuthViewModel()
     @State private var isSignUp = false
     @FocusState private var focusedField: Field?
@@ -90,6 +83,7 @@ struct AuthView: View {
                     toggle
                     form
                     actionButton
+                    guestButton
                     if vm.showCheckEmail { checkEmailBanner }
                 }
                 .padding(.horizontal, 24)
@@ -192,6 +186,19 @@ struct AuthView: View {
                     .foregroundStyle(HueWave.inkSoft)
             }
             .disabled(vm.isLoading)
+        }
+    }
+
+    private var guestButton: some View {
+        Button {
+            appState.signInAsGuest()
+        } label: {
+            HStack(spacing: 6) {
+                Image(systemName: "arrow.right.circle")
+                Text("Continue as Guest")
+            }
+            .font(.system(size: 15, weight: .semibold))
+            .foregroundStyle(HueWave.teal)
         }
     }
 

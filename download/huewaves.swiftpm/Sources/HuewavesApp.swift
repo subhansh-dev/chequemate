@@ -1,5 +1,4 @@
 import SwiftUI
-import Supabase
 
 @main
 struct HuewavesApp: App {
@@ -16,16 +15,6 @@ struct HuewavesApp: App {
                         .environmentObject(appState)
                 }
             }
-            .task {
-                for await state in supabase.auth.authStateChanges {
-                    if [.initialSession, .signedIn, .signedOut].contains(state.event) {
-                        appState.isAuthenticated = state.session != nil
-                        if let session = state.session {
-                            appState.currentUser = session.user
-                        }
-                    }
-                }
-            }
         }
     }
 }
@@ -33,7 +22,21 @@ struct HuewavesApp: App {
 @MainActor
 final class AppState: ObservableObject {
     @Published var isAuthenticated = false
-    @Published var currentUser: User?
+    @Published var currentUser: LocalUser?
+    @Published var isGuest = true
+    let authService = LocalAuthService()
+
+    func signInAsGuest() {
+        isGuest = true
+        isAuthenticated = true
+    }
+
+    func signOut() {
+        authService.signOut()
+        isAuthenticated = false
+        isGuest = false
+        currentUser = nil
+    }
 }
 
 // MARK: - Main Tab View
@@ -46,30 +49,96 @@ struct MainTabView: View {
         ZStack {
             MeshBackground()
 
-            TabView(selection: $selectedTab) {
-                ExperienceView()
-                    .tabItem {
-                        Image(systemName: "waveform.circle.fill")
-                        Text("Experience")
-                    }
-                    .tag(0)
+            if appState.isGuest {
+                GuestExperienceView()
+            } else {
+                TabView(selection: $selectedTab) {
+                    ExperienceView()
+                        .tabItem {
+                            Image(systemName: "waveform.circle.fill")
+                            Text("Experience")
+                        }
+                        .tag(0)
 
-                SessionsView()
-                    .tabItem {
-                        Image(systemName: "clock.fill")
-                        Text("Sessions")
-                    }
-                    .tag(1)
+                    SessionsView()
+                        .tabItem {
+                            Image(systemName: "clock.fill")
+                            Text("Sessions")
+                        }
+                        .tag(1)
 
-                ProfileView()
-                    .tabItem {
-                        Image(systemName: "person.fill")
-                        Text("Profile")
-                    }
-                    .tag(2)
+                    ProfileView()
+                        .tabItem {
+                            Image(systemName: "person.fill")
+                            Text("Profile")
+                        }
+                        .tag(2)
+                }
+                .tint(HueWave.teal)
             }
-            .tint(HueWave.teal)
         }
     }
 }
-// Huewaves 
+
+// MARK: - Guest Experience (full app, no auth required)
+
+struct GuestExperienceView: View {
+    @EnvironmentObject var appState: AppState
+    @State private var selectedMode: SensoryMode = .colorToSound
+
+    var body: some View {
+        ZStack {
+            MeshBackground()
+
+            VStack(spacing: 0) {
+                // Nav bar
+                HStack {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Huewaves")
+                            .font(.system(size: 24, weight: .bold, design: .rounded))
+                            .foregroundStyle(HueWave.ink)
+                        Text("Guest Mode")
+                            .font(.system(size: 13, weight: .medium))
+                            .foregroundStyle(HueWave.teal)
+                    }
+                    Spacer()
+                    Button("Sign In") {
+                        appState.signOut()
+                    }
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundStyle(HueWave.teal)
+                }
+                .padding(.horizontal, 20)
+                .padding(.top, 20)
+
+                // Mode selector
+                HStack(spacing: 8) {
+                    ForEach(SensoryMode.allCases, id: \.self) { mode in
+                        ModeChip(mode: mode, isSelected: selectedMode == mode) {
+                            withAnimation(.spring(response: 0.3)) { selectedMode = mode }
+                        }
+                    }
+                }
+                .padding(.horizontal, 20)
+                .padding(.top, 16)
+
+                // Content
+                ScrollView {
+                    Group {
+                        switch selectedMode {
+                        case .colorToSound:
+                            ColorToSoundView()
+                        case .soundToVisual:
+                            SoundToVisualView()
+                        case .audioToHaptic:
+                            AudioToHapticView()
+                        }
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.top, 16)
+                    .padding(.bottom, 40)
+                }
+            }
+        }
+    }
+}
