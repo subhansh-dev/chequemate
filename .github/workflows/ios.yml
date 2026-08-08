@@ -26,5 +26,5 @@ jobs:
 
       - name: Build Swift Package
         run: |
-          cd download/huewaves.swiftpm
+          cd download/Huewaves
           swift build -c debug 2>&1
