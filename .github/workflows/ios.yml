@@ -7,10 +7,14 @@ on:
     branches: [main]
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     name: Build iOS App
-    runs-on: macos-latest
+    runs-on: macos-26
 
     steps:
       - name: Checkout repository
@@ -24,7 +28,42 @@ jobs:
       - name: Show Xcode version
         run: xcodebuild -version
 
-      - name: Build Swift Package
+      - name: Build for iOS Simulator
         run: |
+          set -o pipefail
           cd download/Huewaves
-          swift build -c debug 2>&1
+          xcodebuild -scheme Huewaves \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build \
+            build 2>&1 | xcpretty --color
+
+      - name: Report build result
+        if: failure()
+        run: |
+          echo "::error::Build failed. Check the xcodebuild output above for compilation errors."
+          echo "Common issues:"
+          echo "  - Missing iOS 26 SDK: update Xcode"
+          echo "  - API availability: check @available annotations"
+          echo "  - Swift concurrency: ensure @MainActor consistency"
+
+  swiftlint:
+    name: Lint
+    runs-on: macos-26
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check for common issues
+        run: |
+          cd download/Huewaves/Sources
+          echo "=== Checking for force unwraps ==="
+          grep -rn '!\s*$\|\.unsafelyUnwrapped\|try!' *.swift || echo "  None found"
+
+          echo "=== Checking for print statements ==="
+          grep -rn 'print(' *.swift || echo "  None found"
+
+          echo "=== Checking for TODO/FIXME ==="
+          grep -rn 'TODO\|FIXME\|HACK' *.swift || echo "  None found"
+
+          echo "=== Checking for hardcoded secrets ==="
+          grep -rn 'YOUR_.*KEY\|YOUR_.*SECRET\|password.*=.*"[^"]' *.swift || echo "  None found"

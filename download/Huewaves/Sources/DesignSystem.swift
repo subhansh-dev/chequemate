@@ -3,21 +3,22 @@ import SwiftUI
 // MARK: - Design Tokens
 
 enum HueWave {
-    static let bg = Color(red: 0.012, green: 0.024, blue: 0.055)
-    static let bgDeep = Color(red: 0.024, green: 0.047, blue: 0.102)
-    static let surface = Color.white.opacity(0.04)
-    static let surfaceRaised = Color.white.opacity(0.08)
-    static let teal = Color(red: 0.831, green: 0.659, blue: 0.325)
-    static let aqua = Color(red: 0.910, green: 0.788, blue: 0.478)
-    static let rose = Color(red: 0.941, green: 0.565, blue: 0.675)
-    static let ink = Color.white
-    static let inkSoft = Color.white.opacity(0.6)
-    static let inkFaint = Color.white.opacity(0.35)
-    static let line = Color.white.opacity(0.09)
-    static let lineStrong = Color.white.opacity(0.18)
+    static let bg = Color(red: 0.97, green: 0.95, blue: 0.92)
+    static let bgDeep = Color(red: 0.94, green: 0.91, blue: 0.87)
+    static let bgWarm = Color(red: 0.99, green: 0.97, blue: 0.94)
+    static let peach = Color(red: 0.98, green: 0.68, blue: 0.50)
+    static let peachLight = Color(red: 1.0, green: 0.82, blue: 0.70)
+    static let peachDeep = Color(red: 0.88, green: 0.52, blue: 0.38)
+    static let coral = Color(red: 0.92, green: 0.42, blue: 0.42)
+    static let sand = Color(red: 0.86, green: 0.80, blue: 0.70)
+    static let blush = Color(red: 0.93, green: 0.62, blue: 0.58)
+    static let mint = Color(red: 0.50, green: 0.78, blue: 0.68)
+    static let ink = Color(red: 0.16, green: 0.14, blue: 0.12)
+    static let inkSoft = Color(red: 0.42, green: 0.38, blue: 0.35)
+    static let inkFaint = Color(red: 0.62, green: 0.58, blue: 0.55)
 }
 
-// MARK: - Liquid Glass Card
+// MARK: - Glass Card (Native Liquid Glass)
 
 struct GlassCard<Content: View>: View {
     let content: Content
@@ -32,42 +33,12 @@ struct GlassCard<Content: View>: View {
 
     var body: some View {
         content
-            .background(
-                RoundedRectangle(cornerRadius: cornerRadius)
-                    .fill(HueWave.surface)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: cornerRadius)
-                            .strokeBorder(HueWave.line, lineWidth: 1)
-                    )
-            )
+            .padding(interactive ? 4 : 0)
+            .glassEffect(.regular.tint(HueWave.peach.opacity(0.06)), in: .rect(cornerRadius: cornerRadius))
     }
 }
 
-// MARK: - Neumorphic Panel
-
-struct NeoPanel<Content: View>: View {
-    let content: Content
-    var cornerRadius: CGFloat = 24
-    var pressed: Bool = false
-
-    init(cornerRadius: CGFloat = 24, pressed: Bool = false, @ViewBuilder content: () -> Content) {
-        self.cornerRadius = cornerRadius
-        self.pressed = pressed
-        self.content = content()
-    }
-
-    var body: some View {
-        content
-            .background(
-                RoundedRectangle(cornerRadius: cornerRadius)
-                    .fill(HueWave.bg)
-                    .shadow(color: .black.opacity(0.5), radius: pressed ? 2 : 8, x: pressed ? 1 : 4, y: pressed ? 1 : 4)
-                    .shadow(color: Color.white.opacity(0.04), radius: pressed ? 1 : 4, x: pressed ? -1 : -3, y: pressed ? -1 : -3)
-            )
-    }
-}
-
-// MARK: - Liquid Glass Button
+// MARK: - Glass Button
 
 struct GlassButton: View {
     let title: String
@@ -83,7 +54,7 @@ struct GlassButton: View {
             HStack(spacing: 8) {
                 if isLoading {
                     ProgressView()
-                        .tint(variant == .primary ? HueWave.bg : HueWave.ink)
+                        .tint(variant == .primary ? .white : HueWave.ink)
                 } else {
                     if let icon {
                         Image(systemName: icon)
@@ -95,40 +66,20 @@ struct GlassButton: View {
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 16)
-            .background(buttonBackground)
-            .foregroundStyle(variant == .primary ? HueWave.bg : HueWave.ink)
-            .clipShape(Capsule())
-            .overlay(
-                Capsule()
-                    .strokeBorder(borderColor, lineWidth: variant == .ghost ? 1 : 0)
-            )
+            .foregroundStyle(variant == .primary ? .white : HueWave.ink)
+            .glassEffect(.regular.tint(variant == .primary ? HueWave.peach : .clear), in: .capsule)
         }
         .disabled(isLoading)
     }
-
-    private var buttonBackground: some ShapeStyle {
-        switch variant {
-        case .primary:
-            return AnyShapeStyle(LinearGradient(colors: [HueWave.teal, HueWave.aqua], startPoint: .leading, endPoint: .trailing))
-        case .secondary:
-            return AnyShapeStyle(HueWave.surfaceRaised)
-        case .ghost:
-            return AnyShapeStyle(Color.clear)
-        }
-    }
-
-    private var borderColor: Color {
-        variant == .ghost ? HueWave.lineStrong : .clear
-    }
 }
 
-// MARK: - Liquid Glass Icon Button
+// MARK: - Glass Icon Button
 
 struct GlassIconButton: View {
     let icon: String
     let action: () -> Void
     var size: CGFloat = 48
-    var tint: Color = HueWave.teal
+    var tint: Color = HueWave.peach
 
     var body: some View {
         Button(action: action) {
@@ -136,11 +87,7 @@ struct GlassIconButton: View {
                 .font(.system(size: size * 0.4, weight: .semibold))
                 .foregroundStyle(tint)
                 .frame(width: size, height: size)
-                .background(
-                    Circle()
-                        .fill(HueWave.surface)
-                        .overlay(Circle().strokeBorder(HueWave.line, lineWidth: 1))
-                )
+                .glassEffect(.regular.tint(tint.opacity(0.12)), in: .circle)
         }
     }
 }
@@ -158,7 +105,7 @@ struct SectionHeader: View {
             HStack(spacing: 10) {
                 Text(index)
                     .font(.system(size: 13, weight: .bold, design: .monospaced))
-                    .foregroundStyle(HueWave.teal)
+                    .foregroundStyle(HueWave.peach)
                 Text(tag.uppercased())
                     .font(.system(size: 11, weight: .bold, design: .monospaced))
                     .tracking(1.5)
@@ -187,7 +134,7 @@ struct GlowDot: View {
         Circle()
             .fill(color)
             .frame(width: size, height: size)
-            .shadow(color: color.opacity(0.6), radius: 6)
+            .shadow(color: color.opacity(0.5), radius: 4)
     }
 }
 
@@ -196,8 +143,12 @@ struct GlowDot: View {
 struct MeshBackground: View {
     var body: some View {
         ZStack {
-            LinearGradient(colors: [HueWave.bg, HueWave.bgDeep, HueWave.bg], startPoint: .top, endPoint: .bottom)
-                .ignoresSafeArea()
+            LinearGradient(
+                colors: [HueWave.bgWarm, HueWave.bg, HueWave.bgDeep],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
 
             TimelineView(.animation) { timeline in
                 Canvas { context, size in
@@ -206,19 +157,26 @@ struct MeshBackground: View {
                     let cy = size.height * 0.35
 
                     context.blendMode = .softLight
-                    for i in 0..<3 {
-                        let angle = Double(i) / 3 * .pi * 2 + t * 0.12
-                        let dist = min(size.width, size.height) * (0.18 + 0.06 * sin(t * 0.3 + Double(i)))
+
+                    let blobs: [(Double, Color, Double)] = [
+                        (0, HueWave.peachLight, 0.20),
+                        (2.094, HueWave.blush, 0.18),
+                        (4.189, HueWave.sand, 0.16),
+                        (1.0, HueWave.mint, 0.12),
+                    ]
+
+                    for (offset, color, opacity) in blobs {
+                        let angle = offset + t * 0.06
+                        let dist = min(size.width, size.height) * (0.22 + 0.04 * sin(t * 0.15 + offset))
                         let px = cx + CGFloat(cos(angle)) * dist
                         let py = cy + CGFloat(sin(angle)) * dist * 0.5
-                        let color = i == 0 ? HueWave.teal : (i == 1 ? HueWave.rose : HueWave.aqua)
                         context.fill(
-                            Path(ellipseIn: CGRect(x: px - 100, y: py - 100, width: 200, height: 200)),
+                            Path(ellipseIn: CGRect(x: px - 140, y: py - 140, width: 280, height: 280)),
                             with: .radialGradient(
-                                Gradient(colors: [color.opacity(0.12), .clear]),
+                                Gradient(colors: [color.opacity(opacity), .clear]),
                                 center: CGPoint(x: px, y: py),
                                 startRadius: 0,
-                                endRadius: 120
+                                endRadius: 160
                             )
                         )
                     }
@@ -228,7 +186,7 @@ struct MeshBackground: View {
     }
 }
 
-// MARK: - Text Field
+// MARK: - Text Field (Neumorphic Inset)
 
 struct GlassTextField: View {
     let placeholder: String
@@ -260,11 +218,7 @@ struct GlassTextField: View {
         }
         .padding(.horizontal, 18)
         .padding(.vertical, 16)
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(HueWave.surface)
-                .overlay(RoundedRectangle(cornerRadius: 16).strokeBorder(HueWave.line, lineWidth: 1))
-        )
+        .glassEffect(.regular, in: .rect(cornerRadius: 16))
         .overlay(alignment: .leading) {
             if text.isEmpty {
                 Text(placeholder)

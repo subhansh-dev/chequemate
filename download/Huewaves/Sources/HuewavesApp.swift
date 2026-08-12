@@ -74,13 +74,13 @@ struct MainTabView: View {
                         }
                         .tag(2)
                 }
-                .tint(HueWave.teal)
+                .tint(HueWave.peach)
             }
         }
     }
 }
 
-// MARK: - Guest Experience (full app, no auth required)
+// MARK: - Guest Experience
 
 struct GuestExperienceView: View {
     @EnvironmentObject var appState: AppState
@@ -91,7 +91,6 @@ struct GuestExperienceView: View {
             MeshBackground()
 
             VStack(spacing: 0) {
-                // Nav bar
                 HStack {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Huewaves")
@@ -99,30 +98,30 @@ struct GuestExperienceView: View {
                             .foregroundStyle(HueWave.ink)
                         Text("Guest Mode")
                             .font(.system(size: 13, weight: .medium))
-                            .foregroundStyle(HueWave.teal)
+                            .foregroundStyle(HueWave.peach)
                     }
                     Spacer()
                     Button("Sign In") {
                         appState.signOut()
                     }
                     .font(.system(size: 15, weight: .semibold))
-                    .foregroundStyle(HueWave.teal)
+                    .foregroundStyle(HueWave.peach)
                 }
                 .padding(.horizontal, 20)
                 .padding(.top, 20)
 
-                // Mode selector
-                HStack(spacing: 8) {
-                    ForEach(SensoryMode.allCases, id: \.self) { mode in
-                        ModeChip(mode: mode, isSelected: selectedMode == mode) {
-                            withAnimation(.spring(response: 0.3)) { selectedMode = mode }
+                GlassEffectContainer {
+                    HStack(spacing: 8) {
+                        ForEach(SensoryMode.allCases, id: \.self) { mode in
+                            ModeChip(mode: mode, isSelected: selectedMode == mode) {
+                                withAnimation(.spring(response: 0.3)) { selectedMode = mode }
+                            }
                         }
                     }
                 }
                 .padding(.horizontal, 20)
                 .padding(.top, 16)
 
-                // Content
                 ScrollView {
                     Group {
                         switch selectedMode {

@@ -78,32 +78,30 @@ struct AuthView: View {
             MeshBackground()
 
             ScrollView {
-                VStack(spacing: 32) {
-                    header
-                    toggle
-                    form
-                    actionButton
-                    guestButton
-                    if vm.showCheckEmail { checkEmailBanner }
+                GlassEffectContainer {
+                    VStack(spacing: 32) {
+                        header
+                        toggle
+                        form
+                        actionButton
+                        guestButton
+                        if vm.showCheckEmail { checkEmailBanner }
+                    }
+                    .padding(.horizontal, 24)
+                    .padding(.top, 60)
+                    .padding(.bottom, 40)
                 }
-                .padding(.horizontal, 24)
-                .padding(.top, 60)
-                .padding(.bottom, 40)
             }
         }
     }
 
     private var header: some View {
         VStack(spacing: 16) {
-            ZStack {
-                Circle()
-                    .fill(HueWave.surface)
-                    .frame(width: 80, height: 80)
-                    .overlay(Circle().strokeBorder(HueWave.teal.opacity(0.3), lineWidth: 2))
-                Image(systemName: "waveform")
-                    .font(.system(size: 32, weight: .semibold))
-                    .foregroundStyle(HueWave.teal)
-            }
+            Image(systemName: "waveform")
+                .font(.system(size: 32, weight: .semibold))
+                .foregroundStyle(HueWave.peach)
+                .frame(width: 80, height: 80)
+                .glassEffect(.regular.tint(HueWave.peach.opacity(0.1)), in: .circle)
 
             VStack(spacing: 8) {
                 Text("Huewaves")
@@ -126,23 +124,19 @@ struct AuthView: View {
             }
         }
         .padding(4)
-        .background(
-            RoundedRectangle(cornerRadius: 14)
-                .fill(HueWave.surface)
-                .overlay(RoundedRectangle(cornerRadius: 14).strokeBorder(HueWave.line, lineWidth: 1))
-        )
+        .glassEffect(.regular, in: .rect(cornerRadius: 14))
     }
 
     private func tab(title: String, isSelected: Bool, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Text(title)
                 .font(.system(size: 15, weight: .semibold))
-                .foregroundStyle(isSelected ? HueWave.bg : HueWave.inkSoft)
+                .foregroundStyle(isSelected ? .white : HueWave.inkSoft)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 12)
                 .background(
                     RoundedRectangle(cornerRadius: 10)
-                        .fill(isSelected ? HueWave.teal : Color.clear)
+                        .fill(isSelected ? HueWave.peach : Color.clear)
                 )
         }
         .buttonStyle(.plain)
@@ -159,7 +153,7 @@ struct AuthView: View {
             if let error = vm.errorMessage {
                 Text(error)
                     .font(.system(size: 14, weight: .medium))
-                    .foregroundStyle(HueWave.rose)
+                    .foregroundStyle(HueWave.coral)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
@@ -198,24 +192,20 @@ struct AuthView: View {
                 Text("Continue as Guest")
             }
             .font(.system(size: 15, weight: .semibold))
-            .foregroundStyle(HueWave.teal)
+            .foregroundStyle(HueWave.peach)
         }
     }
 
     private var checkEmailBanner: some View {
         HStack(spacing: 10) {
             Image(systemName: "envelope.badge")
-                .foregroundStyle(HueWave.teal)
+                .foregroundStyle(HueWave.peach)
             Text("Check your email for a confirmation link")
                 .font(.system(size: 15, weight: .medium))
                 .foregroundStyle(HueWave.ink)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(16)
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(HueWave.teal.opacity(0.1))
-                .overlay(RoundedRectangle(cornerRadius: 16).strokeBorder(HueWave.teal.opacity(0.2), lineWidth: 1))
-        )
+        .glassEffect(.regular.tint(HueWave.peach.opacity(0.08)), in: .rect(cornerRadius: 16))
     }
 }

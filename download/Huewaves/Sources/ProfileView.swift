@@ -12,17 +12,12 @@ struct ProfileView: View {
 
             ScrollView {
                 VStack(spacing: 24) {
-                    // Header
                     VStack(spacing: 16) {
-                        ZStack {
-                            Circle()
-                                .fill(HueWave.surface)
-                                .frame(width: 90, height: 90)
-                                .overlay(Circle().strokeBorder(HueWave.teal.opacity(0.3), lineWidth: 2))
-                            Text(initials)
-                                .font(.system(size: 32, weight: .bold, design: .rounded))
-                                .foregroundStyle(HueWave.teal)
-                        }
+                        Text(initials)
+                            .font(.system(size: 32, weight: .bold, design: .rounded))
+                            .foregroundStyle(HueWave.peach)
+                            .frame(width: 90, height: 90)
+                            .glassEffect(.regular.tint(HueWave.peach.opacity(0.1)), in: .circle)
 
                         VStack(spacing: 4) {
                             Text(displayName)
@@ -35,10 +30,8 @@ struct ProfileView: View {
                     }
                     .padding(.top, 40)
 
-                    // Stats
                     statsCard
 
-                    // Actions
                     VStack(spacing: 12) {
                         GlassButton(title: "Sign Out", icon: "arrow.right.square", action: signOut, variant: .ghost)
                     }
@@ -56,7 +49,7 @@ struct ProfileView: View {
     }
 
     private var displayName: String {
-        appState.currentUser?.email?.components(separatedBy: "@").first?.capitalized ?? "Guest"
+        appState.currentUser?.email.components(separatedBy: "@").first?.capitalized ?? "Guest"
     }
 
     private var email: String {
@@ -67,9 +60,9 @@ struct ProfileView: View {
         GlassCard {
             HStack(spacing: 0) {
                 statItem(value: "3", label: "Modes")
-                Divider().frame(height: 40).background(HueWave.line)
+                Divider().frame(height: 40).background(HueWave.inkFaint.opacity(0.2))
                 statItem(value: "∞", label: "Sessions")
-                Divider().frame(height: 40).background(HueWave.line)
+                Divider().frame(height: 40).background(HueWave.inkFaint.opacity(0.2))
                 statItem(value: "1", label: "Streak")
             }
             .padding(.vertical, 20)
@@ -81,7 +74,7 @@ struct ProfileView: View {
         VStack(spacing: 4) {
             Text(value)
                 .font(.system(size: 24, weight: .bold, design: .rounded))
-                .foregroundStyle(HueWave.ink)
+                .foregroundStyle(HueWave.peach)
             Text(label.uppercased())
                 .font(.system(size: 11, weight: .bold))
                 .foregroundStyle(HueWave.inkFaint)

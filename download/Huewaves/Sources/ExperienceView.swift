@@ -6,22 +6,26 @@ import CoreHaptics
 
 struct ExperienceView: View {
     @State private var selectedMode: SensoryMode = .colorToSound
-    @State private var showOnboarding = true
 
     var body: some View {
         ZStack {
             MeshBackground()
 
             VStack(spacing: 0) {
-                // Nav bar
                 navBar
 
-                // Mode selector
-                modeSelector
-                    .padding(.horizontal, 20)
-                    .padding(.top, 8)
+                GlassEffectContainer {
+                    HStack(spacing: 8) {
+                        ForEach(SensoryMode.allCases, id: \.self) { mode in
+                            ModeChip(mode: mode, isSelected: selectedMode == mode) {
+                                withAnimation(.spring(response: 0.3)) { selectedMode = mode }
+                            }
+                        }
+                    }
+                }
+                .padding(.horizontal, 20)
+                .padding(.top, 8)
 
-                // Content
                 ScrollView {
                     Group {
                         switch selectedMode {
@@ -52,20 +56,10 @@ struct ExperienceView: View {
                     .foregroundStyle(HueWave.inkFaint)
             }
             Spacer()
-            GlowDot(color: HueWave.teal)
+            GlowDot(color: HueWave.peach)
         }
         .padding(.horizontal, 20)
         .padding(.top, 20)
-    }
-
-    private var modeSelector: some View {
-        HStack(spacing: 8) {
-            ForEach(SensoryMode.allCases, id: \.self) { mode in
-                ModeChip(mode: mode, isSelected: selectedMode == mode) {
-                    withAnimation(.spring(response: 0.3)) { selectedMode = mode }
-                }
-            }
-        }
     }
 }
 
@@ -78,9 +72,9 @@ struct ModeChip: View {
 
     private var tint: Color {
         switch mode {
-        case .colorToSound: return HueWave.teal
-        case .soundToVisual: return HueWave.aqua
-        case .audioToHaptic: return HueWave.rose
+        case .colorToSound: return HueWave.peach
+        case .soundToVisual: return HueWave.coral
+        case .audioToHaptic: return HueWave.mint
         }
     }
 
@@ -88,9 +82,8 @@ struct ModeChip: View {
         Button(action: action) {
             HStack(spacing: 6) {
                 Circle()
-                    .fill(isSelected ? tint : HueWave.inkFaint)
+                    .fill(isSelected ? tint : HueWave.inkFaint.opacity(0.3))
                     .frame(width: 8, height: 8)
-                    .shadow(color: isSelected ? tint.opacity(0.8) : .clear, radius: 4)
 
                 Text(mode.rawValue)
                     .font(.system(size: 14, weight: .semibold))
@@ -98,14 +91,7 @@ struct ModeChip: View {
             }
             .padding(.horizontal, 14)
             .padding(.vertical, 10)
-            .background(
-                Capsule()
-                    .fill(isSelected ? tint.opacity(0.15) : HueWave.surface)
-            )
-            .overlay(
-                Capsule()
-                    .strokeBorder(isSelected ? tint.opacity(0.4) : HueWave.line, lineWidth: 1)
-            )
+            .glassEffect(.regular.tint(isSelected ? tint.opacity(0.15) : .clear), in: .capsule)
         }
         .buttonStyle(.plain)
     }
@@ -119,7 +105,7 @@ enum SensoryMode: String, CaseIterable {
     case audioToHaptic = "Feel → Understand"
 }
 
-// MARK: - Color → Sound View (Premium)
+// MARK: - Color → Sound View
 
 struct ColorToSoundView: View {
     @State private var currentHue: Double = 0
@@ -132,19 +118,17 @@ struct ColorToSoundView: View {
 
     var body: some View {
         VStack(spacing: 24) {
-            // Dial
             ZStack {
-                // Outer ring
                 Circle()
                     .strokeBorder(
                         AngularGradient(
                             stops: [
-                                .init(color: .red, location: 0),
-                                .init(color: .yellow, location: 0.17),
-                                .init(color: .green, location: 0.33),
-                                .init(color: .cyan, location: 0.5),
-                                .init(color: .blue, location: 0.67),
-                                .init(color: .red, location: 1)
+                                .init(color: HueWave.peach, location: 0),
+                                .init(color: HueWave.sand, location: 0.17),
+                                .init(color: HueWave.coral, location: 0.33),
+                                .init(color: HueWave.peachDeep, location: 0.5),
+                                .init(color: HueWave.blush, location: 0.67),
+                                .init(color: HueWave.peach, location: 1)
                             ],
                             center: .center
                         ),
@@ -152,13 +136,11 @@ struct ColorToSoundView: View {
                     )
                     .frame(width: 240, height: 240)
 
-                // Inner color preview
                 Circle()
-                    .fill(Color(hue: currentHue / 360, saturation: 0.8, brightness: 0.8))
+                    .fill(Color(hue: currentHue / 360, saturation: 0.4, brightness: 0.92))
                     .frame(width: 180, height: 180)
-                    .shadow(color: Color(hue: currentHue / 360, saturation: 0.8, brightness: 0.8).opacity(0.5), radius: 30)
+                    .shadow(color: Color(hue: currentHue / 360, saturation: 0.35, brightness: 0.85).opacity(0.25), radius: 16)
 
-                // Note display
                 VStack(spacing: 4) {
                     Text(noteName)
                         .font(.system(size: 42, weight: .bold, design: .rounded))
@@ -170,7 +152,6 @@ struct ColorToSoundView: View {
             }
             .frame(height: 260)
 
-            // Slider
             VStack(spacing: 8) {
                 Text("COLOR HUE")
                     .font(.system(size: 12, weight: .bold))
@@ -187,10 +168,9 @@ struct ColorToSoundView: View {
                         isScanning = false
                     }
                 }
-                .tint(Color(hue: currentHue / 360, saturation: 0.8, brightness: 0.8))
+                .tint(Color(hue: currentHue / 360, saturation: 0.45, brightness: 0.85))
             }
 
-            // Mapping card
             mappingCard
 
             Spacer()
@@ -203,16 +183,16 @@ struct ColorToSoundView: View {
             VStack(spacing: 16) {
                 HStack {
                     Label("Visual", systemImage: "eye.fill")
-                        .foregroundStyle(HueWave.teal)
+                        .foregroundStyle(HueWave.peach)
                     Spacer()
                     Circle()
-                        .fill(Color(hue: currentHue / 360, saturation: 0.8, brightness: 0.8))
+                        .fill(Color(hue: currentHue / 360, saturation: 0.4, brightness: 0.92))
                         .frame(width: 24, height: 24)
                 }
 
                 HStack {
                     Label("Auditory", systemImage: "waveform")
-                        .foregroundStyle(HueWave.aqua)
+                        .foregroundStyle(HueWave.coral)
                     Spacer()
                     Text(noteName)
                         .font(.title3.bold().monospacedDigit())
@@ -221,11 +201,11 @@ struct ColorToSoundView: View {
 
                 HStack {
                     Label("Haptic", systemImage: "hand.tap.fill")
-                        .foregroundStyle(HueWave.rose)
+                        .foregroundStyle(HueWave.mint)
                     Spacer()
                     Text(isScanning ? "Active" : "Idle")
                         .font(.subheadline.weight(.medium))
-                        .foregroundStyle(isScanning ? HueWave.teal : HueWave.inkFaint)
+                        .foregroundStyle(isScanning ? HueWave.peach : HueWave.inkFaint)
                 }
             }
             .padding(20)
@@ -241,7 +221,7 @@ struct ColorToSoundView: View {
     }
 }
 
-// MARK: - Sound → Visual View (Premium)
+// MARK: - Sound → Visual View
 
 struct SoundToVisualView: View {
     @State private var audioLevels: [Float] = Array(repeating: 0, count: 32)
@@ -251,7 +231,6 @@ struct SoundToVisualView: View {
 
     var body: some View {
         VStack(spacing: 24) {
-            // Visualizer
             ZStack {
                 GlassCard(cornerRadius: 24) {
                     Canvas { context, size in
@@ -269,12 +248,12 @@ struct SoundToVisualView: View {
                             context.opacity = 0.25
                             context.fill(
                                 Path(ellipseIn: CGRect(x: x - 22, y: y - 22, width: 44, height: 44)),
-                                with: .color(Color(hue: angle / (.pi * 2), saturation: 0.85, brightness: 0.6 + level * 0.4))
+                                with: .color(Color(hue: angle / (.pi * 2), saturation: 0.35, brightness: 0.9 + level * 0.1))
                             )
                             context.opacity = 1.0
                             context.fill(
                                 Path(ellipseIn: CGRect(x: x - 5, y: y - 5, width: 10, height: 10)),
-                                with: .color(.white)
+                                with: .color(HueWave.ink)
                             )
                         }
                     }
@@ -283,15 +262,14 @@ struct SoundToVisualView: View {
             }
             .frame(height: 300)
 
-            // Spectrum bars
             HStack(spacing: 3) {
                 ForEach(0..<32, id: \.self) { i in
                     let level = mic.isLive ? mic.levels[i] : audioLevels[i]
                     RoundedRectangle(cornerRadius: 2)
                         .fill(LinearGradient(
                             colors: [
-                                Color(hue: Double(i) / 32, saturation: 0.8, brightness: 0.6),
-                                Color(hue: Double(i) / 32, saturation: 0.9, brightness: 0.9)
+                                Color(hue: Double(i) / 32, saturation: 0.3, brightness: 0.92),
+                                Color(hue: Double(i) / 32, saturation: 0.4, brightness: 0.88)
                             ],
                             startPoint: .bottom,
                             endPoint: .top
@@ -301,7 +279,6 @@ struct SoundToVisualView: View {
             }
             .frame(height: 100)
 
-            // Toggle button
             GlassButton(
                 title: mic.isLive ? "Stop Listening" : "Start Listening",
                 icon: mic.isLive ? "stop.fill" : "mic.fill",
@@ -339,7 +316,7 @@ struct SoundToVisualView: View {
     }
 }
 
-// MARK: - Audio → Haptic View (Premium)
+// MARK: - Audio → Haptic View
 
 struct AudioToHapticView: View {
     @State private var isPlaying = false
@@ -350,13 +327,12 @@ struct AudioToHapticView: View {
 
     var body: some View {
         VStack(spacing: 28) {
-            // Visualizer
             ZStack {
                 ForEach(0..<5, id: \.self) { i in
                     Circle()
                         .strokeBorder(
                             LinearGradient(
-                                colors: [HueWave.teal.opacity(0.5), HueWave.rose.opacity(0.3)],
+                                colors: [HueWave.peach.opacity(0.5), HueWave.mint.opacity(0.3)],
                                 startPoint: .top,
                                 endPoint: .bottom
                             ),
@@ -370,7 +346,7 @@ struct AudioToHapticView: View {
                 Image(systemName: "hand.raised.fill")
                     .font(.system(size: 44))
                     .foregroundStyle(LinearGradient(
-                        colors: [HueWave.teal, HueWave.rose],
+                        colors: [HueWave.peach, HueWave.mint],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     ))
@@ -378,7 +354,6 @@ struct AudioToHapticView: View {
             }
             .frame(height: 280)
 
-            // Pattern picker
             VStack(spacing: 12) {
                 Text("PATTERN")
                     .font(.system(size: 12, weight: .bold))
@@ -393,7 +368,6 @@ struct AudioToHapticView: View {
                 .pickerStyle(.segmented)
             }
 
-            // Play button
             GlassButton(
                 title: isPlaying ? "Experiencing…" : "Feel the Sound",
                 icon: isPlaying ? "hand.raised.fill" : "hand.tap.fill",
