@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleIdentifier</key>
+	<string>dev.subhansh.huewaves</string>
+	<key>CFBundleName</key>
+	<string>Huewaves</string>
+	<key>CFBundleDisplayName</key>
+	<string>Huewaves</string>
+	<key>CFBundleExecutable</key>
+	<string>Huewaves</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>UILaunchScreen</key>
+	<dict/>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>Huewaves needs camera access to read colors and turn them into music.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Huewaves needs microphone access to capture sounds and transform them into visual art.</string>
+</dict>
+</plist>
