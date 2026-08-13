@@ -1,0 +1,75 @@
+﻿2026-08-13T13:43:49.0662680Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-08-13T13:43:49.0670610Z ##[group]Run actions/checkout@v4
+2026-08-13T13:43:49.0671230Z with:
+2026-08-13T13:43:49.0671610Z   repository: subhansh-dev/huewaves
+2026-08-13T13:43:49.0674750Z   token: ***
+2026-08-13T13:43:49.0675190Z   ssh-strict: true
+2026-08-13T13:43:49.0675650Z   ssh-user: git
+2026-08-13T13:43:49.0676020Z   persist-credentials: true
+2026-08-13T13:43:49.0676510Z   clean: true
+2026-08-13T13:43:49.0676880Z   sparse-checkout-cone-mode: true
+2026-08-13T13:43:49.0677300Z   fetch-depth: 1
+2026-08-13T13:43:49.0677710Z   fetch-tags: false
+2026-08-13T13:43:49.0678170Z   show-progress: true
+2026-08-13T13:43:49.0678510Z   lfs: false
+2026-08-13T13:43:49.0678900Z   submodules: false
+2026-08-13T13:43:49.0679470Z   set-safe-directory: true
+2026-08-13T13:43:49.0679930Z   allow-unsafe-pr-checkout: false
+2026-08-13T13:43:49.0680510Z ##[endgroup]
+2026-08-13T13:43:49.5291870Z Syncing repository: subhansh-dev/huewaves
+2026-08-13T13:43:49.5293780Z ##[group]Getting Git version info
+2026-08-13T13:43:49.5294390Z Working directory is '/Users/runner/work/huewaves/huewaves'
+2026-08-13T13:43:49.5295230Z [command]/opt/homebrew/bin/git version
+2026-08-13T13:43:49.5745110Z git version 2.55.0
+2026-08-13T13:43:49.5760830Z ##[endgroup]
+2026-08-13T13:43:49.5767420Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/097f4c05-d280-4f55-b72b-be02fdc8684d/.gitconfig'
+2026-08-13T13:43:49.5780120Z Temporarily overriding HOME='/Users/runner/work/_temp/097f4c05-d280-4f55-b72b-be02fdc8684d' before making global git config changes
+2026-08-13T13:43:49.5784690Z Adding repository directory to the temporary git global config as a safe directory
+2026-08-13T13:43:49.5787010Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/huewaves/huewaves
+2026-08-13T13:43:49.5929270Z Deleting the contents of '/Users/runner/work/huewaves/huewaves'
+2026-08-13T13:43:49.5933250Z ##[group]Initializing the repository
+2026-08-13T13:43:49.5936890Z [command]/opt/homebrew/bin/git init /Users/runner/work/huewaves/huewaves
+2026-08-13T13:43:49.6206610Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-08-13T13:43:49.6212410Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-08-13T13:43:49.6213890Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-08-13T13:43:49.6214800Z hint: call:
+2026-08-13T13:43:49.6215400Z hint:
+2026-08-13T13:43:49.6216120Z hint: 	git config --global init.defaultBranch <name>
+2026-08-13T13:43:49.6216780Z hint:
+2026-08-13T13:43:49.6217500Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-08-13T13:43:49.6218390Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-08-13T13:43:49.6219240Z hint:
+2026-08-13T13:43:49.6219770Z hint: 	git branch -m <name>
+2026-08-13T13:43:49.6220260Z hint:
+2026-08-13T13:43:49.6220910Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-08-13T13:43:49.6221890Z Initialized empty Git repository in /Users/runner/work/huewaves/huewaves/.git/
+2026-08-13T13:43:49.6224030Z [command]/opt/homebrew/bin/git remote add origin https://github.com/subhansh-dev/huewaves
+2026-08-13T13:43:49.6328020Z ##[endgroup]
+2026-08-13T13:43:49.6330260Z ##[group]Disabling automatic garbage collection
+2026-08-13T13:43:49.6332200Z [command]/opt/homebrew/bin/git config --local gc.auto 0
+2026-08-13T13:43:49.6412950Z ##[endgroup]
+2026-08-13T13:43:49.6413920Z ##[group]Setting up auth
+2026-08-13T13:43:49.6421030Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-08-13T13:43:49.6493120Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-08-13T13:43:49.7930610Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-08-13T13:43:49.8004800Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-08-13T13:43:49.9173140Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-08-13T13:43:49.9291500Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-08-13T13:43:50.0411390Z [command]/opt/homebrew/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-08-13T13:43:50.0491770Z ##[endgroup]
+2026-08-13T13:43:50.0492970Z ##[group]Fetching the repository
+2026-08-13T13:43:50.0500920Z [command]/opt/homebrew/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +cb788a94e1627d208e58af6b2ad24bfe85725280:refs/remotes/origin/main
+2026-08-13T13:43:50.6147860Z From https://github.com/subhansh-dev/huewaves
+2026-08-13T13:43:50.6149190Z  * [new ref]         cb788a94e1627d208e58af6b2ad24bfe85725280 -> origin/main
+2026-08-13T13:43:50.6151810Z ##[endgroup]
+2026-08-13T13:43:50.6152770Z ##[group]Determining the checkout info
+2026-08-13T13:43:50.6153840Z ##[endgroup]
+2026-08-13T13:43:50.6156870Z [command]/opt/homebrew/bin/git sparse-checkout disable
+2026-08-13T13:43:50.6263860Z [command]/opt/homebrew/bin/git config --local --unset-all extensions.worktreeConfig
+2026-08-13T13:43:50.6343130Z ##[group]Checking out the ref
+2026-08-13T13:43:50.6346720Z [command]/opt/homebrew/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-08-13T13:43:50.6584390Z Switched to a new branch 'main'
+2026-08-13T13:43:50.6588030Z branch 'main' set up to track 'origin/main'.
+2026-08-13T13:43:50.6594240Z ##[endgroup]
+2026-08-13T13:43:50.6699000Z [command]/opt/homebrew/bin/git log -1 --format=%H
+2026-08-13T13:43:50.6783210Z cb788a94e1627d208e58af6b2ad24bfe85725280

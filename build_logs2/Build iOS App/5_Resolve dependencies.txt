@@ -1,0 +1,6 @@
+﻿2026-08-13T13:43:51.1232810Z ##[group]Run swift package resolve
+2026-08-13T13:43:51.1233980Z [36;1mswift package resolve[0m
+2026-08-13T13:43:51.1283180Z shell: /bin/bash -e {0}
+2026-08-13T13:43:51.1283990Z env:
+2026-08-13T13:43:51.1284810Z   MD_APPLE_SDK_ROOT: /Applications/Xcode_26.6.app
+2026-08-13T13:43:51.1286050Z ##[endgroup]

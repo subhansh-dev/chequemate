@@ -1,0 +1,32 @@
+﻿2026-08-13T13:43:47.7697040Z Current runner version: '2.336.0'
+2026-08-13T13:43:47.7733710Z ##[group]Runner Image Provisioner
+2026-08-13T13:43:47.7734580Z Hosted Compute Agent
+2026-08-13T13:43:47.7735040Z Version: 20260707.563
+2026-08-13T13:43:47.7735540Z Commit: 02667638d2b423fbc733a8e32a88b44996a3ba6e
+2026-08-13T13:43:47.7736150Z Build Date: 2026-07-07T19:33:50Z
+2026-08-13T13:43:47.7736830Z Worker ID: {ef514234-dcdc-4695-ba2f-4a36827df036}
+2026-08-13T13:43:47.7737530Z Azure Region: westus
+2026-08-13T13:43:47.7738070Z ##[endgroup]
+2026-08-13T13:43:47.7739460Z ##[group]Operating System
+2026-08-13T13:43:47.7740060Z macOS
+2026-08-13T13:43:47.7740540Z 26.5.2
+2026-08-13T13:43:47.7740960Z 25F84
+2026-08-13T13:43:47.7741340Z ##[endgroup]
+2026-08-13T13:43:47.7741850Z ##[group]Runner Image
+2026-08-13T13:43:47.7742290Z Image: macos-26-arm64
+2026-08-13T13:43:47.7742810Z Version: 20260728.0273.1
+2026-08-13T13:43:47.7743690Z Included Software: https://github.com/actions/runner-images/blob/macos-26-arm64/20260728.0273/images/macos/macos-26-arm64-Readme.md
+2026-08-13T13:43:47.7745280Z Image Release: https://github.com/actions/runner-images/releases/tag/macos-26-arm64%2F20260728.0273
+2026-08-13T13:43:47.7746110Z ##[endgroup]
+2026-08-13T13:43:47.7746950Z ##[group]GITHUB_TOKEN Permissions
+2026-08-13T13:43:47.7748560Z Contents: read
+2026-08-13T13:43:47.7749040Z Metadata: read
+2026-08-13T13:43:47.7749470Z Packages: read
+2026-08-13T13:43:47.7749860Z ##[endgroup]
+2026-08-13T13:43:47.7751790Z Secret source: Actions
+2026-08-13T13:43:47.7752480Z Prepare workflow directory
+2026-08-13T13:43:47.8002450Z Prepare all required actions
+2026-08-13T13:43:47.8041840Z Getting action download info
+2026-08-13T13:43:48.2251410Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-08-13T13:43:48.4979720Z Download action repository 'maxim-lobanov/setup-xcode@v1' (SHA:ed7a3b1fda3918c0306d1b724322adc0b8cc0a90)
+2026-08-13T13:43:49.0118060Z Complete job name: Build iOS App

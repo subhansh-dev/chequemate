@@ -1,0 +1,15 @@
+﻿2026-08-13T13:44:35.4720620Z ##[group]Run echo "::error::Build failed. Check the xcodebuild output above for compilation errors."
+2026-08-13T13:44:35.4721380Z [36;1mecho "::error::Build failed. Check the xcodebuild output above for compilation errors."[0m
+2026-08-13T13:44:35.4721910Z [36;1mecho "Common issues:"[0m
+2026-08-13T13:44:35.4723080Z [36;1mecho "  - Missing iOS 26 SDK: update Xcode"[0m
+2026-08-13T13:44:35.4724310Z [36;1mecho "  - API availability: check @available annotations"[0m
+2026-08-13T13:44:35.4725370Z [36;1mecho "  - Swift concurrency: ensure @MainActor consistency"[0m
+2026-08-13T13:44:35.5317030Z shell: /bin/bash -e {0}
+2026-08-13T13:44:35.5317840Z env:
+2026-08-13T13:44:35.5318690Z   MD_APPLE_SDK_ROOT: /Applications/Xcode_26.6.app
+2026-08-13T13:44:35.5319500Z ##[endgroup]
+2026-08-13T13:44:35.6089150Z ##[error]Build failed. Check the xcodebuild output above for compilation errors.
+2026-08-13T13:44:35.6197300Z Common issues:
+2026-08-13T13:44:35.6300550Z   - Missing iOS 26 SDK: update Xcode
+2026-08-13T13:44:35.6405040Z   - API availability: check @available annotations
+2026-08-13T13:44:35.6508120Z   - Swift concurrency: ensure @MainActor consistency

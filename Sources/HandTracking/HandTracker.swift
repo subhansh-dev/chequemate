@@ -15,7 +15,7 @@ struct HandLandmark: Identifiable {
 struct HandData {
     let landmarks: [VNHumanHandPoseObservation.JointName: VNRecognizedPoint]
     let screenPoints: [VNHumanHandPoseObservation.JointName: CGPoint]
-    let handedness: VNHumanHandPoseObservation.Chirality
+    let handedness: VNChirality
 
     var indexTip: CGPoint? { screenPoints[.indexTip] }
     var thumbTip: CGPoint? { screenPoints[.thumbTip] }
@@ -265,7 +265,7 @@ final class HandTracker: ObservableObject {
         var rightData: HandData?
 
         for observation in results {
-            guard let chirality = try? observation.chirality else { continue }
+            let chirality = observation.chirality
 
             var screenPoints: [VNHumanHandPoseObservation.JointName: CGPoint] = [:]
             var allPoints: [VNHumanHandPoseObservation.JointName: VNRecognizedPoint] = [:]
@@ -401,7 +401,7 @@ final class HandTracker: ObservableObject {
 
 // MARK: - AVCaptureVideoDataOutputSampleBufferDelegate (NSObject)
 
-nonisolated(unsafe) final class HandTrackingDelegate: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, @unchecked Sendable {
+final class HandTrackingDelegate: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, @unchecked Sendable {
     let tracker: HandTracker
 
     init(tracker: HandTracker) {
