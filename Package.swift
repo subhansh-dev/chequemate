@@ -10,10 +10,7 @@ let package = Package(
     targets: [
         .executableTarget(
             name: "Huewaves",
-            path: "Sources",
-            cSettings: [
-                .headerSearchPath("Audio/include")
-            ]
+            path: "Sources"
         )
     ]
 )

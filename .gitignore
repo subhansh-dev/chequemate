@@ -6,6 +6,8 @@ xcuserdata/
 *.xcworkspace/
 DerivedData/
 build/
+build_logs/
+build_log.zip
 *.ipa
 *.dSYM.zip
 *.dSYM

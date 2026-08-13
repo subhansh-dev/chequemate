@@ -1,254 +1,215 @@
 import Foundation
 import AVFoundation
-import CoreHaptics
-import HuewavesAudio
 
-// MARK: - Synth Audio Engine (wraps C render callback)
+// MARK: - Audio Control Data
 
-@MainActor
-final class SynthEngine: ObservableObject {
-    @Published var isRunning = false
-    @Published var currentWaveform: WaveformType = .sine
-    @Published var volume: Float = 0.0
+struct AudioControlData {
+    var frequency: Float = 261.63
+    var amplitude: Float = 0.0
+    var filterCutoff: Float = 0.5
+    var waveformType: Int = 0    // 0=sine, 1=sawtooth, 2=square, 3=triangle
+    var gestureType: Int = 0     // 0=sustained, 1=percussive, 2=plucked
+}
 
-    private let engine = AVAudioEngine()
-    private var rendererState = AudioRendererState()
-    private var sourceNode: AVAudioSourceNode?
-    private var startTime: CFTimeInterval = 0
+// MARK: - Lock-Free Ring Buffer
 
-    enum WaveformType: Int, CaseIterable {
-        case sine = 0
-        case sawtooth = 1
-        case square = 2
-        case triangle = 3
-
-        var label: String {
-            switch self {
-            case .sine: return "Sine"
-            case .sawtooth: return "Saw"
-            case .square: return "Square"
-            case .triangle: return "Tri"
-            }
-        }
-
-        var icon: String {
-            switch self {
-            case .sine: return "waveform"
-            case .sawtooth: return "waveform.circle"
-            case .square: return "square.grid.3x3"
-            case .triangle: return "triangle"
-            }
-        }
-    }
+final class ControlRingBuffer: @unchecked Sendable {
+    private let buffer = UnsafeMutablePointer<AudioControlData>.allocate(capacity: 256)
+    private var writeIndex: UInt32 = 0
+    private var readIndex: UInt32 = 0
 
     init() {
-        rendererInit(&rendererState)
-        setupEngine()
+        buffer.initialize(repeating: AudioControlData(), count: 256)
     }
 
-    private func setupEngine() {
-        let format = AVAudioFormat(commonFormat: .pcmFormatFloat32,
-                                    sampleRate: 44100,
-                                    channels: 2,
-                                    interleaved: false)!
-
-        sourceNode = AVAudioSourceNode(renderFormat: format) { [weak self] _, _, frameCount, audioBufferList -> OSStatus in
-            guard let self = self else { return noErr }
-
-            let ablPointer = UnsafeMutableAudioBufferListPointer(audioBufferList)
-            let leftChannel = ablPointer[0].bindMemory(to: Float.self)
-            let rightChannel = ablPointer[1].bindMemory(to: Float.self)
-
-            let currentTime = Float(CACurrentMediaTime() - self.startTime)
-
-            withUnsafeMutablePointer(to: &self.rendererState) { statePtr in
-                rendererRender(statePtr,
-                              leftChannel.baseAddress,
-                              rightChannel.baseAddress,
-                              Int(frameCount),
-                              currentTime)
-            }
-
-            return noErr
-        }
-
-        guard let sourceNode else { return }
-        engine.attach(sourceNode)
-        engine.connect(sourceNode, to: engine.mainMixerNode, format: nil)
-
-        // Set output volume
-        engine.mainMixerNode.outputVolume = 1.0
+    deinit {
+        buffer.deallocate()
     }
 
-    func start() {
-        guard !isRunning else { return }
-        engine.prepare()
-        do {
-            try engine.start()
-            startTime = CACurrentMediaTime()
-            isRunning = true
-        } catch {
-            print("Audio engine failed to start: \(error)")
-        }
+    func write(_ data: AudioControlData) -> Bool {
+        let nextWrite = (writeIndex &+ 1) & 255
+        guard nextWrite != readIndex else { return false }
+        buffer[Int(writeIndex)] = data
+        writeIndex = nextWrite
+        return true
     }
 
-    func stop() {
-        guard isRunning else { return }
-        // Fade out
-        writeParams(frequency: 0, amplitude: 0, filterCutoff: 0, waveform: 0, gesture: 0)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
-            self?.engine.stop()
-            self?.isRunning = false
-        }
-    }
-
-    func writeParams(frequency: Float, amplitude: Float, filterCutoff: Float,
-                     waveform: Int, gesture: Int) {
-        withUnsafeMutablePointer(to: &rendererState) { statePtr in
-            rendererWriteParams(statePtr,
-                               frequency,
-                               amplitude,
-                               filterCutoff,
-                               Int32(waveform),
-                               Int32(gesture))
-        }
-    }
-
-    func setWaveform(_ type: WaveformType) {
-        currentWaveform = type
-    }
-
-    func cycleWaveform() {
-        let next = (currentWaveform.rawValue + 1) % WaveformType.allCases.count
-        currentWaveform = WaveformType(rawValue: next) ?? .sine
+    func read(_ data: UnsafeMutablePointer<AudioControlData>) -> Bool {
+        guard readIndex != writeIndex else { return false }
+        data.pointee = buffer[Int(readIndex)]
+        readIndex = (readIndex &+ 1) & 255
+        return true
     }
 }
 
-// MARK: - Microphone Analyzer (kept from original, for Sound→Visual fallback)
+// MARK: - Waveform Generators
 
-@MainActor
-final class MicrophoneAnalyzer: ObservableObject {
-    @Published var levels: [Float] = Array(repeating: 0, count: 32)
-    @Published private(set) var isLive: Bool = false
-
-    private let engine = AVAudioEngine()
-
-    func start() {
-        guard !isLive else { return }
-        let session = AVAudioSession.sharedInstance()
-        try? session.setCategory(.record, mode: .measurement)
-        try? session.setActive(true)
-
-        let input = engine.inputNode
-        let format = input.outputFormat(forBus: 0)
-        input.removeTap(onBus: 0)
-        input.installTap(onBus: 0, bufferSize: 4096, format: format) { [weak self] buffer, _ in
-            let bins = Self.binLevels(buffer, count: 32)
-            DispatchQueue.main.async {
-                guard let self else { return }
-                self.isLive = true
-                self.levels = bins
-            }
-        }
-
-        engine.prepare()
-        do {
-            try engine.start()
-        } catch {
-            levels = Array(repeating: 0, count: 32)
-        }
+enum WaveformGenerator {
+    static func sine(_ frequency: Float, _ sampleRate: Float, _ phase: Float) -> Float {
+        return sinf(2.0 * .pi * frequency * phase / sampleRate)
     }
 
-    func stop() {
-        engine.inputNode.removeTap(onBus: 0)
-        engine.stop()
-        try? AVAudioSession.sharedInstance().setActive(false)
-        isLive = false
-        levels = Array(repeating: 0, count: 32)
+    static func sawtooth(_ frequency: Float, _ sampleRate: Float, _ phase: Float) -> Float {
+        var value: Float = 0
+        let t = phase / sampleRate
+        for h in 1...8 {
+            value += sinf(2.0 * .pi * frequency * Float(h) * t) / Float(h)
+        }
+        return value * 0.5
     }
 
-    private static func binLevels(_ buffer: AVAudioPCMBuffer, count: Int) -> [Float] {
-        guard let channel = buffer.floatChannelData?[0] else { return Array(repeating: 0, count: count) }
-        let frames = Int(buffer.frameLength)
-        guard frames > 0 else { return Array(repeating: 0, count: count) }
-        let binSize = max(1, frames / count)
-        var result = [Float](repeating: 0, count: count)
-        for bin in 0..<count {
-            let start = bin * binSize
-            let end = min(start + binSize, frames)
-            guard end > start else { continue }
-            var sum: Double = 0
-            for i in start..<end {
-                let v = Double(channel[i])
-                sum += v * v
-            }
-            let rms = sqrt(sum / Double(end - start))
-            result[bin] = Float(min(1, max(0, rms * 5)))
+    static func square(_ frequency: Float, _ sampleRate: Float, _ phase: Float) -> Float {
+        var value: Float = 0
+        let t = phase / sampleRate
+        for h in stride(from: 1, through: 8, by: 2) {
+            value += sinf(2.0 * .pi * frequency * Float(h) * t) / Float(h)
         }
-        return result
+        return value * 0.75
+    }
+
+    static func triangle(_ frequency: Float, _ sampleRate: Float, _ phase: Float) -> Float {
+        var value: Float = 0
+        let t = phase / sampleRate
+        for h in 0..<4 {
+            let n = 2 * h + 1
+            let sign: Float = (h % 2 == 0) ? 1.0 : -1.0
+            value += sign * sinf(2.0 * .pi * frequency * Float(n) * t) / (Float(n) * Float(n))
+        }
+        return value * 0.8
+    }
+
+    static func generate(_ type: Int, _ frequency: Float, _ sampleRate: Float, _ phase: Float) -> Float {
+        switch type {
+        case 0: return sine(frequency, sampleRate, phase)
+        case 1: return sawtooth(frequency, sampleRate, phase)
+        case 2: return square(frequency, sampleRate, phase)
+        case 3: return triangle(frequency, sampleRate, phase)
+        default: return sine(frequency, sampleRate, phase)
+        }
     }
 }
 
-// MARK: - Haptics Controller
+// MARK: - ADSR Envelope
 
-@MainActor
-final class HapticsController: ObservableObject {
-    @Published private(set) var isActive = false
+struct ADSREnvelope {
+    var attack: Float = 0.02
+    var decay: Float = 0.1
+    var sustain: Float = 0.7
+    var release: Float = 0.3
+    var startTime: Float = 0
+    var releaseTime: Float = -1
+    var isActive: Bool = true
+    var isReleasing: Bool = false
 
-    private var engine: CHHapticEngine?
-    private var player: CHHapticPatternPlayer?
+    mutating func noteOn(_ time: Float) {
+        startTime = time
+        releaseTime = -1
+        isActive = true
+        isReleasing = false
+    }
 
-    init() {
-        guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else { return }
-        engine = try? CHHapticEngine()
-        engine?.isAutoShutdownEnabled = true
-        do {
-            try engine?.start()
-        } catch {
-            engine = nil
+    mutating func noteOff(_ time: Float) {
+        releaseTime = time
+        isReleasing = true
+    }
+
+    mutating func process(_ time: Float) -> Float {
+        guard isActive else { return 0 }
+
+        if !isReleasing {
+            let t = time - startTime
+            if t < attack { return t / attack }
+            let t2 = t - attack
+            if t2 < decay { return 1.0 - (1.0 - sustain) * (t2 / decay) }
+            return sustain
+        } else {
+            let t = time - releaseTime
+            if t >= release {
+                isActive = false
+                return 0
+            }
+            return sustain * (1.0 - t / release)
         }
     }
+}
 
-    func playPercussive(intensity: Float) {
-        guard let engine else { return }
-        let event = CHHapticEvent(
-            eventType: .hapticTransient,
-            parameters: [
-                CHHapticEventParameter(parameterID: .hapticIntensity, value: intensity),
-                CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.8)
-            ],
-            relativeTime: 0
+// MARK: - Low-Pass Filter
+
+struct LowPassFilter {
+    var previousOutput: Float = 0
+    var cutoff: Float = 0.5
+
+    mutating func process(_ input: Float) -> Float {
+        let coeff = cutoff * 0.3
+        let output = previousOutput + coeff * (input - previousOutput)
+        previousOutput = output
+        return output
+    }
+}
+
+// MARK: - Audio Renderer State
+
+final class AudioRendererState: @unchecked Sendable {
+    let ringBuffer = ControlRingBuffer()
+    var phase: Float = 0
+    let sampleRate: Float = 44100
+    var envelope = ADSREnvelope()
+    var filter = LowPassFilter()
+    var currentParams = AudioControlData()
+    var lastFrequency: Float = 261.63
+
+    func writeParams(frequency: Float, amplitude: Float, filterCutoff: Float, waveform: Int, gesture: Int) {
+        let data = AudioControlData(
+            frequency: frequency,
+            amplitude: amplitude,
+            filterCutoff: filterCutoff,
+            waveformType: waveform,
+            gestureType: gesture
         )
-        guard let pattern = try? CHHapticPattern(events: [event], parameters: []),
-              let newPlayer = try? engine.makePlayer(with: pattern) else { return }
-        try? player?.stop(atTime: 0)
-        player = newPlayer
-        try? player?.start(atTime: CHHapticTimeImmediate)
-        isActive = true
+        ringBuffer.write(data)
     }
 
-    func playContinuous(intensity: Float, duration: TimeInterval) {
-        guard let engine else { return }
-        let event = CHHapticEvent(
-            eventType: .hapticContinuous,
-            parameters: [
-                CHHapticEventParameter(parameterID: .hapticIntensity, value: intensity),
-                CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.5)
-            ],
-            relativeTime: 0,
-            duration: duration
-        )
-        guard let pattern = try? CHHapticPattern(events: [event], parameters: []),
-              let newPlayer = try? engine.makePlayer(with: pattern) else { return }
-        try? player?.stop(atTime: 0)
-        player = newPlayer
-        try? player?.start(atTime: CHHapticTimeImmediate)
-        isActive = true
-    }
+    func render(leftChannel: UnsafeMutablePointer<Float>, rightChannel: UnsafeMutablePointer<Float>, frameCount: Int, currentTime: Float) {
+        for i in 0..<frameCount {
+            // Read latest params
+            var params = AudioControlData()
+            while ringBuffer.read(&params) {
+                currentParams = params
+            }
 
-    func stop() {
-        try? player?.stop(atTime: 0)
-        player = nil
-        isActive = false
+            // Detect frequency change — trigger re-attack
+            let freqDelta = abs(currentParams.frequency - lastFrequency)
+            if freqDelta > 5.0 && currentParams.amplitude > 0.01 {
+                envelope.noteOn(currentTime)
+            }
+            lastFrequency = currentParams.frequency
+
+            // Update filter
+            filter.cutoff = currentParams.filterCutoff
+
+            // Generate waveform
+            var sample = WaveformGenerator.generate(
+                currentParams.waveformType,
+                currentParams.frequency,
+                sampleRate,
+                phase
+            )
+
+            // Apply envelope
+            let env = envelope.process(currentTime)
+            sample *= env * currentParams.amplitude
+
+            // Apply filter
+            sample = filter.process(sample)
+
+            // Soft clip (analog warmth)
+            sample = tanhf(sample * 1.5)
+
+            // Output
+            leftChannel[i] = sample
+            rightChannel[i] = sample
+
+            phase += 1
+        }
     }
 }

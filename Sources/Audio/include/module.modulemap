@@ -1,4 +1,0 @@
-module HuewavesAudio {
-    header "HuewavesAudio.h"
-    export *
-}
