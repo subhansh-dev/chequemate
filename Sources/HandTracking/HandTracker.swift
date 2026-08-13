@@ -1,4 +1,5 @@
 import Foundation
+import CoreImage
 @preconcurrency import AVFoundation
 @preconcurrency import Vision
 import Combine
@@ -88,8 +89,7 @@ struct GestureClassifier {
               let ringMCP = landmarks[.ringMCP],
               let littleTip = landmarks[.littleTip],
               let littleMCP = landmarks[.littleMCP],
-              let thumbTip = landmarks[.thumbTip],
-              let thumbIP = landmarks[.thumbIP] else {
+              let thumbTip = landmarks[.thumbTip] else {
             return .open
         }
 
@@ -189,24 +189,32 @@ final class HandTracker: ObservableObject {
         }
 
         videoConnection = videoOutput.connection(with: .video)
-        videoConnection?.videoOrientation = .portrait
+        if #available(iOS 17.0, *) {
+            videoConnection?.videoRotationAngle = 90
+        } else {
+            videoConnection?.videoOrientation = .portrait
+        }
 
         captureSession.commitConfiguration()
 
         // Set delegate after configuration
-        videoOutput.setSampleBufferDelegate(HandTrackingDelegate(tracker: self), queue: processingQueue)
+        let delegate = HandTrackingDelegate(tracker: self)
+        videoOutput.setSampleBufferDelegate(delegate, queue: processingQueue)
+        _ = delegate // prevent premature deallocation
 
-        processingQueue.async { [weak self] in
-            self?.captureSession.startRunning()
-            DispatchQueue.main.async {
+        let session = captureSession
+        processingQueue.async {
+            session.startRunning()
+            DispatchQueue.main.async { [weak self] in
                 self?.isTracking = true
             }
         }
     }
 
     func stopTracking() {
+        let session = captureSession
         processingQueue.async { [weak self] in
-            self?.captureSession.stopRunning()
+            session.stopRunning()
             DispatchQueue.main.async {
                 self?.leftHand = nil
                 self?.rightHand = nil
@@ -223,7 +231,7 @@ final class HandTracker: ObservableObject {
     }
 
     // Process a frame on background queue
-    func processFrame(_ sampleBuffer: CMSampleBuffer) {
+    nonisolated func processFrame(_ sampleBuffer: CMSampleBuffer) {
         let now = CACurrentMediaTime()
         let elapsed = now - lastFrameTime
 
@@ -402,7 +410,7 @@ final class HandTracker: ObservableObject {
 // MARK: - AVCaptureVideoDataOutputSampleBufferDelegate (NSObject)
 
 final class HandTrackingDelegate: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, @unchecked Sendable {
-    let tracker: HandTracker
+    nonisolated(unsafe) let tracker: HandTracker
 
     init(tracker: HandTracker) {
         self.tracker = tracker

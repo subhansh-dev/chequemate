@@ -1,5 +1,6 @@
 import SwiftUI
 import AVFoundation
+import Vision
 
 // MARK: - Camera Preview (UIViewRepresentable)
 
@@ -261,17 +262,17 @@ struct InstrumentView: View {
     private func drawHandLandmarks(context: GraphicsContext, size: CGSize) {
         // Draw left hand
         if let leftHand = handTracker.leftHand {
-            drawHand(context: context, hand: leftHand, color: HueWave.peach)
+            drawHand(context: context, hand: leftHand, color: HueWave.peach, size: size)
         }
 
         // Draw right hand
         if let rightHand = handTracker.rightHand {
-            drawHand(context: context, hand: rightHand, color: HueWave.mint)
+            drawHand(context: context, hand: rightHand, color: HueWave.mint, size: size)
         }
     }
 
-    private func drawHand(context: GraphicsContext, hand: HandData, color: Color) {
-        guard let screenPoints = try? hand.screenPoints else { return }
+    private func drawHand(context: GraphicsContext, hand: HandData, color: Color, size: CGSize) {
+        let screenPoints = hand.screenPoints
 
         // Draw connections between joints
         let connections: [(VNHumanHandPoseObservation.JointName, VNHumanHandPoseObservation.JointName)] = [
