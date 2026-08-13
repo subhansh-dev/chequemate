@@ -80,12 +80,11 @@ struct InstrumentView: View {
             .padding(.bottom, 32)
         }
         .onAppear {
-            synthEngine.start()
             handTracker.startTracking()
         }
         .onDisappear {
             handTracker.stopTracking()
-            synthEngine.stop()
+            synthEngine.stopTone()
             haptics.stop()
         }
         .onChange(of: handTracker.pitch) { _, newFreq in
@@ -375,13 +374,11 @@ struct InstrumentView: View {
     }
 
     private func updateAudio() {
-        synthEngine.writeParams(
-            frequency: handTracker.pitch,
-            amplitude: handTracker.amplitude,
-            filterCutoff: handTracker.filterCutoff,
-            waveform: handTracker.waveformType,
-            gesture: handTracker.currentGesture == .fist ? 1 : 0
-        )
+        if handTracker.amplitude > 0.01 {
+            synthEngine.playTone(frequency: handTracker.pitch)
+        } else {
+            synthEngine.stopTone()
+        }
     }
 
     private func handleGestureChange(_ gesture: HandGesture) {
