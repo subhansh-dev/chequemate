@@ -53,10 +53,10 @@ struct MainTabView: View {
                 GuestExperienceView()
             } else {
                 TabView(selection: $selectedTab) {
-                    ExperienceView()
+                    InstrumentView()
                         .tabItem {
                             Image(systemName: "waveform.circle.fill")
-                            Text("Experience")
+                            Text("Play")
                         }
                         .tag(0)
 
@@ -80,64 +80,25 @@ struct MainTabView: View {
     }
 }
 
-// MARK: - Guest Experience
+// MARK: - Guest Experience (full instrument, no auth required)
 
 struct GuestExperienceView: View {
     @EnvironmentObject var appState: AppState
-    @State private var selectedMode: SensoryMode = .colorToSound
 
     var body: some View {
         ZStack {
             MeshBackground()
 
-            VStack(spacing: 0) {
-                HStack {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Huewaves")
-                            .font(.system(size: 24, weight: .bold, design: .rounded))
-                            .foregroundStyle(HueWave.ink)
-                        Text("Guest Mode")
-                            .font(.system(size: 13, weight: .medium))
-                            .foregroundStyle(HueWave.peach)
-                    }
-                    Spacer()
+            InstrumentView()
+                .overlay(alignment: .topTrailing) {
                     Button("Sign In") {
                         appState.signOut()
                     }
-                    .font(.system(size: 15, weight: .semibold))
+                    .font(.system(size: 14, weight: .semibold))
                     .foregroundStyle(HueWave.peach)
-                }
-                .padding(.horizontal, 20)
-                .padding(.top, 20)
-
-                GlassEffectContainer {
-                    HStack(spacing: 8) {
-                        ForEach(SensoryMode.allCases, id: \.self) { mode in
-                            ModeChip(mode: mode, isSelected: selectedMode == mode) {
-                                withAnimation(.spring(response: 0.3)) { selectedMode = mode }
-                            }
-                        }
-                    }
-                }
-                .padding(.horizontal, 20)
-                .padding(.top, 16)
-
-                ScrollView {
-                    Group {
-                        switch selectedMode {
-                        case .colorToSound:
-                            ColorToSoundView()
-                        case .soundToVisual:
-                            SoundToVisualView()
-                        case .audioToHaptic:
-                            AudioToHapticView()
-                        }
-                    }
-                    .padding(.horizontal, 20)
+                    .padding(.trailing, 20)
                     .padding(.top, 16)
-                    .padding(.bottom, 40)
                 }
-            }
         }
     }
 }

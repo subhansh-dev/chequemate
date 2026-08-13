@@ -28,12 +28,10 @@ jobs:
       - name: Show Xcode version
         run: xcodebuild -version
 
-      - name: Resolve dependencies
-        run: swift package resolve
-
       - name: Build for iOS Simulator
         run: |
           set -o pipefail
+          cd download/Huewaves
           xcodebuild -scheme Huewaves \
             -destination 'generic/platform=iOS Simulator' \
             -derivedDataPath build \
@@ -48,7 +46,7 @@ jobs:
           echo "  - API availability: check @available annotations"
           echo "  - Swift concurrency: ensure @MainActor consistency"
 
-  lint:
+  swiftlint:
     name: Lint
     runs-on: macos-26
     steps:
@@ -57,17 +55,15 @@ jobs:
 
       - name: Check for common issues
         run: |
+          cd download/Huewaves/Sources
           echo "=== Checking for force unwraps ==="
-          grep -rn '!\s*$\|\.unsafelyUnwrapped\|try!' Sources/ --include="*.swift" || echo "  None found"
+          grep -rn '!\s*$\|\.unsafelyUnwrapped\|try!' *.swift || echo "  None found"
 
           echo "=== Checking for print statements ==="
-          grep -rn 'print(' Sources/ --include="*.swift" || echo "  None found"
+          grep -rn 'print(' *.swift || echo "  None found"
 
           echo "=== Checking for TODO/FIXME ==="
-          grep -rn 'TODO\|FIXME\|HACK' Sources/ --include="*.swift" || echo "  None found"
+          grep -rn 'TODO\|FIXME\|HACK' *.swift || echo "  None found"
 
           echo "=== Checking for hardcoded secrets ==="
-          grep -rn 'YOUR_.*KEY\|YOUR_.*SECRET\|password.*=.*"[^"]' Sources/ --include="*.swift" || echo "  None found"
-
-          echo "=== Checking C source files ==="
-          find Sources/ -name "*.c" -o -name "*.h" | head -20
+          grep -rn 'YOUR_.*KEY\|YOUR_.*SECRET\|password.*=.*"[^"]' *.swift || echo "  None found"
