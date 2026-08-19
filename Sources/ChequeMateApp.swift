@@ -17,6 +17,7 @@ struct ChequeMateApp: App {
 
 // MARK: - Haptics
 
+@MainActor
 enum Haptics {
     static func tap() {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()

@@ -50,7 +50,9 @@ enum HueMotion {
 struct SpecularEdge: Shape {
     func path(in rect: CGRect) -> Path {
         var p = Path()
-        p.addRoundedRect(in: rect.insetBy(dx: 0.5, dy: 0.5), cornerRadius: rect.height * 0.28, style: .continuous)
+        let inset = rect.insetBy(dx: 0.5, dy: 0.5)
+        let r = inset.height * 0.28
+        p.addRoundedRect(in: inset, cornerRadii: RectangleCornerRadii(topLeading: r, bottomLeading: r, bottomTrailing: r, topTrailing: r), style: .continuous)
         return p
     }
 }
@@ -315,7 +317,7 @@ struct GlassTextField: View {
 extension View {
     /// Subtle 3D tilt driven by drag â€” passes live angles out.
     func tilt3D(x: Binding<CGFloat>, y: Binding<CGFloat>) -> some View {
-        self.rotation3DEffect(.degrees(Double(y)), axis: (x: 1, y: 0, z: 0), perspective: 0.6)
-            .rotation3DEffect(.degrees(Double(x)), axis: (x: 0, y: 1, z: 0), perspective: 0.6)
+        self.rotation3DEffect(.degrees(Double(y.wrappedValue)), axis: (x: 1, y: 0, z: 0), perspective: 0.6)
+            .rotation3DEffect(.degrees(Double(x.wrappedValue)), axis: (x: 0, y: 1, z: 0), perspective: 0.6)
     }
 }
