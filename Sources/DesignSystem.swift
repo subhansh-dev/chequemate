@@ -91,9 +91,9 @@ struct GlassCard<Content: View>: View {
 struct GlassButton: View {
     let title: String
     let icon: String?
-    let action: () -> Void
     var variant: Variant = .primary
     var isLoading: Bool = false
+    let action: () -> Void
     enum Variant { case primary, secondary, ghost }
 
     @State private var pressed = false
