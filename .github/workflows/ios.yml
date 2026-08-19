@@ -34,7 +34,7 @@ jobs:
       - name: Build for iOS Simulator
         run: |
           set -o pipefail
-          xcodebuild -scheme Huewaves \
+          xcodebuild -scheme ChequeMate \
             -destination 'generic/platform=iOS Simulator' \
             -derivedDataPath build \
             build 2>&1 | xcpretty --color

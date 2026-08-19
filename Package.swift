@@ -2,14 +2,14 @@
 import PackageDescription
 
 let package = Package(
-    name: "Huewaves",
+    name: "ChequeMate",
     platforms: [.iOS(.v26)],
     products: [
-        .executable(name: "Huewaves", targets: ["Huewaves"])
+        .executable(name: "ChequeMate", targets: ["ChequeMate"])
     ],
     targets: [
         .executableTarget(
-            name: "Huewaves",
+            name: "ChequeMate",
             path: "Sources"
         )
     ]

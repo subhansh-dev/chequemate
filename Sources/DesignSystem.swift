@@ -1,21 +1,21 @@
-import SwiftUI
+﻿import SwiftUI
 
-// MARK: - Huewaves Design System — "Liquid Dusk"
+// MARK: - ChequeMate Design System â€” "Liquid Dusk"
 // Apple-native Liquid Glass (iOS 26). Dark-first, lacquered, physical.
 
 // MARK: - Color Tokens
-enum HueWave {
-    // Surfaces — layered near-black with warm undertone
+enum ChequeWave {
+    // Surfaces â€” layered near-black with warm undertone
     static let bg       = Color(red: 0.024, green: 0.024, blue: 0.031)   // void
     static let bgDeep   = Color(red: 0.055, green: 0.051, blue: 0.075)   // raised
     static let bgWarm   = Color(red: 0.086, green: 0.066, blue: 0.094)   // atmospheric
 
-    // Ink — never pure white, always luminous
+    // Ink â€” never pure white, always luminous
     static let ink      = Color.white.opacity(0.94)
     static let inkSoft  = Color.white.opacity(0.58)
     static let inkFaint = Color.white.opacity(0.30)
 
-    // Accents — calibrated like stage lighting, not crayons
+    // Accents â€” calibrated like stage lighting, not crayons
     static let peach      = Color(red: 1.00, green: 0.72, blue: 0.47)   // primary energy
     static let peachDeep  = Color(red: 0.94, green: 0.52, blue: 0.24)
     static let peachLight = Color(red: 1.00, green: 0.86, blue: 0.68)
@@ -66,18 +66,18 @@ struct GlassCard<Content: View>: View {
             .padding(20)
             .background {
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .fill(HueWave.ink.opacity(0.02))
+                    .fill(ChequeWave.ink.opacity(0.02))
             }
             .glassEffect(
                 (interactive ? Glass.regular.interactive() : Glass.regular)
-                    .tint(HueWave.peach.opacity(0.05)),
+                    .tint(ChequeWave.peach.opacity(0.05)),
                 in: .rect(cornerRadius: cornerRadius, style: .continuous))
             .overlay {
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                     .strokeBorder(
                         LinearGradient(
-                            colors: [HueWave.ink.opacity(0.28), HueWave.ink.opacity(0.05),
-                                     HueWave.ink.opacity(0.02), HueWave.peach.opacity(0.16)],
+                            colors: [ChequeWave.ink.opacity(0.28), ChequeWave.ink.opacity(0.05),
+                                     ChequeWave.ink.opacity(0.02), ChequeWave.peach.opacity(0.16)],
                             startPoint: .topLeading, endPoint: .bottomTrailing),
                         lineWidth: 0.5)
             }
@@ -128,22 +128,22 @@ struct GlassButton: View {
     private var foreground: some ShapeStyle {
         switch variant {
         case .primary: return AnyShapeStyle(Color.black.opacity(0.82))
-        case .secondary: return AnyShapeStyle(HueWave.ink)
-        case .ghost: return AnyShapeStyle(HueWave.inkSoft)
+        case .secondary: return AnyShapeStyle(ChequeWave.ink)
+        case .ghost: return AnyShapeStyle(ChequeWave.inkSoft)
         }
     }
 
     @ViewBuilder private var fill: some View {
         if variant == .primary {
-            Capsule().fill(HueWave.peachBeam)
-                .shadow(color: HueWave.peach.opacity(0.45), radius: 18, x: 0, y: 8)
+            Capsule().fill(ChequeWave.peachBeam)
+                .shadow(color: ChequeWave.peach.opacity(0.45), radius: 18, x: 0, y: 8)
         }
     }
 
     private var glass: Glass {
         switch variant {
-        case .primary: return Glass.regular.interactive().tint(HueWave.peach.opacity(0.35))
-        case .secondary: return Glass.regular.interactive().tint(HueWave.ink.opacity(0.04))
+        case .primary: return Glass.regular.interactive().tint(ChequeWave.peach.opacity(0.35))
+        case .secondary: return Glass.regular.interactive().tint(ChequeWave.ink.opacity(0.04))
         case .ghost: return Glass.identity
         }
     }
@@ -151,7 +151,7 @@ struct GlassButton: View {
     @ViewBuilder private var sheen: some View {
         if variant != .ghost {
             Capsule().strokeBorder(
-                LinearGradient(colors: [HueWave.ink.opacity(0.5), HueWave.ink.opacity(0.06)],
+                LinearGradient(colors: [ChequeWave.ink.opacity(0.5), ChequeWave.ink.opacity(0.06)],
                                startPoint: .top, endPoint: .bottom),
                 lineWidth: 0.5)
         }
@@ -163,7 +163,7 @@ struct GlassIconButton: View {
     let icon: String
     let action: () -> Void
     var size: CGFloat = 48
-    var tint: Color = HueWave.peach
+    var tint: Color = ChequeWave.peach
     @State private var pressed = false
 
     var body: some View {
@@ -184,7 +184,7 @@ struct GlassIconButton: View {
     }
 }
 
-// MARK: - Section Header — editorial, keynote rhythm
+// MARK: - Section Header â€” editorial, keynote rhythm
 struct SectionHeader: View {
     let index: String
     let tag: String
@@ -196,19 +196,19 @@ struct SectionHeader: View {
             HStack(spacing: 8) {
                 Text(index)
                     .font(.system(.caption, design: .monospaced, weight: .medium))
-                    .foregroundStyle(HueWave.peach)
+                    .foregroundStyle(ChequeWave.peach)
                 Text(tag.uppercased())
                     .font(.system(.caption2, design: .rounded, weight: .bold))
                     .tracking(1.6)
-                    .foregroundStyle(HueWave.inkFaint)
+                    .foregroundStyle(ChequeWave.inkFaint)
             }
             Text(title)
                 .font(.system(.title2, design: .rounded, weight: .bold))
-                .foregroundStyle(HueWave.ink)
+                .foregroundStyle(ChequeWave.ink)
             if !desc.isEmpty {
                 Text(desc)
                     .font(.system(.subheadline, design: .rounded))
-                    .foregroundStyle(HueWave.inkSoft)
+                    .foregroundStyle(ChequeWave.inkSoft)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
@@ -228,21 +228,21 @@ struct GlowDot: View {
     }
 }
 
-// MARK: - Ambient Background — slow aurora, filmic depth
+// MARK: - Ambient Background â€” slow aurora, filmic depth
 struct MeshBackground: View {
     var body: some View {
         TimelineView(.animation(minimumInterval: 1.0 / 24.0)) { timeline in
             let t = timeline.date.timeIntervalSinceReferenceDate
             Canvas { ctx, size in
                 let base = CGRect(origin: .zero, size: size)
-                ctx.fill(Path(base), with: .color(HueWave.bg))
+                ctx.fill(Path(base), with: .color(ChequeWave.bg))
 
                 let blobs: [(Double, Color, Double, Double)] = [
                     // (phase, color, sizeFactor, speed)
-                    (0.0, HueWave.peachDeep, 1.15, 0.05),
-                    (2.1, HueWave.coral,     0.95, 0.07),
-                    (4.2, HueWave.mint,      0.80, 0.06),
-                    (1.2, HueWave.blush,     0.70, 0.08),
+                    (0.0, ChequeWave.peachDeep, 1.15, 0.05),
+                    (2.1, ChequeWave.coral,     0.95, 0.07),
+                    (4.2, ChequeWave.mint,      0.80, 0.06),
+                    (1.2, ChequeWave.blush,     0.70, 0.08),
                 ]
                 for (phase, color, sf, speed) in blobs {
                     let a = phase + t * speed
@@ -265,7 +265,7 @@ struct MeshBackground: View {
                            center: .center, startRadius: 120, endRadius: 460)
                 .ignoresSafeArea()
         }
-        .background(HueWave.bg.ignoresSafeArea())
+        .background(ChequeWave.bg.ignoresSafeArea())
         .ignoresSafeArea()
     }
 }
@@ -284,13 +284,13 @@ struct GlassTextField: View {
             if let icon {
                 Image(systemName: icon)
                     .font(.system(size: 15, weight: .medium))
-                    .foregroundStyle(focused ? HueWave.peach : HueWave.inkFaint)
+                    .foregroundStyle(focused ? ChequeWave.peach : ChequeWave.inkFaint)
             }
             if isSecure {
-                SecureField("", text: $text, prompt: Text(placeholder).foregroundStyle(HueWave.inkFaint))
+                SecureField("", text: $text, prompt: Text(placeholder).foregroundStyle(ChequeWave.inkFaint))
                     .focused($focused)
             } else {
-                TextField("", text: $text, prompt: Text(placeholder).foregroundStyle(HueWave.inkFaint))
+                TextField("", text: $text, prompt: Text(placeholder).foregroundStyle(ChequeWave.inkFaint))
                     .keyboardType(keyboardType)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
@@ -298,14 +298,14 @@ struct GlassTextField: View {
             }
         }
         .font(.system(.callout, design: .rounded))
-        .foregroundStyle(HueWave.ink)
+        .foregroundStyle(ChequeWave.ink)
         .frame(height: 54)
         .padding(.horizontal, 18)
-        .glassEffect(.regular.interactive().tint((focused ? HueWave.peach : HueWave.ink).opacity(focused ? 0.14 : 0.04)),
+        .glassEffect(.regular.interactive().tint((focused ? ChequeWave.peach : ChequeWave.ink).opacity(focused ? 0.14 : 0.04)),
                      in: .rect(cornerRadius: 18, style: .continuous))
         .overlay {
             RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .strokeBorder(HueWave.peach.opacity(focused ? 0.45 : 0), lineWidth: 1)
+                .strokeBorder(ChequeWave.peach.opacity(focused ? 0.45 : 0), lineWidth: 1)
                 .animation(HueMotion.spring, value: focused)
         }
     }
@@ -313,7 +313,7 @@ struct GlassTextField: View {
 
 // MARK: - Marquee-free helpers
 extension View {
-    /// Subtle 3D tilt driven by drag — passes live angles out.
+    /// Subtle 3D tilt driven by drag â€” passes live angles out.
     func tilt3D(x: Binding<CGFloat>, y: Binding<CGFloat>) -> some View {
         self.rotation3DEffect(.degrees(Double(y)), axis: (x: 1, y: 0, z: 0), perspective: 0.6)
             .rotation3DEffect(.degrees(Double(x)), axis: (x: 0, y: 1, z: 0), perspective: 0.6)
