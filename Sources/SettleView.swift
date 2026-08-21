@@ -136,6 +136,11 @@ struct SettleView: View {
                 Haptics.success()
                 showConfetti = true
                 withAnimation(.spring(response: 0.4)) { store.markPaid(s.id) }
+                if store.allSettled {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                        store.promptSaveSession()
+                    }
+                }
             } label: {
                 HStack(spacing: 4) {
                     Image(systemName: "checkmark")
@@ -152,6 +157,32 @@ struct SettleView: View {
         .padding(10)
         .background { Rectangle().fill(Color.white) }
         .overlay { Rectangle().strokeBorder(ChequeWave.ink, lineWidth: 1.1) }
+
+        if !store.pendingSettlements.isEmpty {
+            Button {
+                Haptics.tap()
+                store.promptSaveSession()
+            } label: {
+                HStack(spacing: 6) {
+                    Image(systemName: "clock.badge.plus")
+                        .font(.system(size: 13, weight: .semibold))
+                    Text("Save as Pending")
+                        .font(.system(.subheadline, design: .rounded, weight: .bold))
+                }
+                .foregroundStyle(ChequeWave.magenta)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 10)
+                .background {
+                    Capsule()
+                        .fill(ChequeWave.magenta.opacity(0.08))
+                }
+                .overlay {
+                    Capsule()
+                        .strokeBorder(ChequeWave.magenta.opacity(0.2), lineWidth: 1)
+                }
+            }
+            .padding(.top, 4)
+        }
     }
 
     private var settledPoster: some View {
@@ -196,6 +227,14 @@ struct SettleView: View {
                     HStack(spacing: 6) { Image(systemName: "flame.fill").font(.system(size: 11, weight: .black)); Text("GET THE FINAL ROAST").font(.system(size: 11, weight: .black, design: .monospaced)) }
                     .foregroundStyle(ChequeWave.blueprintDeep).padding(.horizontal, 14).padding(.vertical, 8)
                     .background { Rectangle().fill(Color.white) }.overlay { Rectangle().strokeBorder(ChequeWave.ink, lineWidth: 1) }
+                }
+                Button {
+                    Haptics.tap()
+                    store.promptSaveSession()
+                } label: {
+                    HStack(spacing: 6) { Image(systemName: "archivebox.fill").font(.system(size: 11, weight: .black)); Text("SAVE TO HISTORY").font(.system(size: 11, weight: .black, design: .monospaced)) }
+                    .foregroundStyle(.white).padding(.horizontal, 14).padding(.vertical, 8)
+                    .background { Rectangle().fill(Color.white.opacity(0.2)) }.overlay { Rectangle().strokeBorder(.white.opacity(0.4), lineWidth: 1) }
                 }
             }
             .frame(maxWidth: .infinity)

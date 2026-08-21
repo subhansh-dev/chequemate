@@ -39,15 +39,18 @@ final class ChequeMateStore: ObservableObject {
     @Published var settlements: [Settlement] = []
     @Published var currency: Currency = .inr
     @Published var selectedTab: Int = 0
+    @Published var sessions: [Session] = []
+    @Published var showSaveSession = false
 
     private let saveKey = "chequemate.state.v1"
+    private let sessionsKey = "chequemate.sessions.v1"
 
     private let palette: [Color] = [
         ChequeWave.lavender, ChequeWave.mint, ChequeWave.peach,
         ChequeWave.sky, ChequeWave.blush
     ]
 
-    init() { load() }
+    init() { load(); loadSessions() }
 
     var totalSpent: Double { expenses.reduce(0) { $0 + $1.amount } }
     var perHead: Double { people.isEmpty ? 0 : totalSpent / Double(people.count) }
@@ -161,6 +164,41 @@ final class ChequeMateStore: ObservableObject {
         settlements = state.settlements
         currency = state.currency
     }
+
+    // MARK: - Sessions
+
+    func saveSession(_ session: Session) {
+        sessions.insert(session, at: 0)
+        saveSessions()
+    }
+
+    func deleteSession(_ id: UUID) {
+        sessions.removeAll { $0.id == id }
+        saveSessions()
+    }
+
+    func moveSessionToHistory(_ id: UUID) {
+        guard let idx = sessions.firstIndex(where: { $0.id == id }) else { return }
+        sessions[idx].isPending = false
+        saveSessions()
+    }
+
+    func promptSaveSession() {
+        guard !people.isEmpty, !expenses.isEmpty else { return }
+        showSaveSession = true
+    }
+
+    private func saveSessions() {
+        if let data = try? JSONEncoder().encode(sessions) {
+            UserDefaults.standard.set(data, forKey: sessionsKey)
+        }
+    }
+
+    private func loadSessions() {
+        guard let data = UserDefaults.standard.data(forKey: sessionsKey),
+              let decoded = try? JSONDecoder().decode([Session].self, from: data) else { return }
+        sessions = decoded
+    }
 }
 
 // MARK: - Tab View — Poster shell (ink tab bar on paper)
@@ -181,6 +219,9 @@ struct MainTabView: View {
                     RoastView()
                         .tabItem { Label("Roast", systemImage: "flame.fill") }
                         .tag(2)
+                    SessionsView()
+                        .tabItem { Label("Sessions", systemImage: "clock.arrow.circlepath") }
+                        .tag(3)
                 }
                 .tint(ChequeWave.blueprint)
                 .onAppear {
@@ -193,6 +234,10 @@ struct MainTabView: View {
                 }
             }
             .ignoresSafeArea()
+            .sheet(isPresented: $store.showSaveSession) {
+                SaveSessionView()
+                    .environmentObject(store)
+            }
     }
 }
 
