@@ -4,6 +4,7 @@
 
 struct SettleView: View {
     @EnvironmentObject var store: ChequeMateStore
+    @State private var showConfetti = false
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -26,6 +27,7 @@ struct SettleView: View {
             .navigationTitle("Settle")
             .navigationBarTitleDisplayMode(.inline)
         }
+        .overlay { ConfettiBurst(trigger: $showConfetti) }
     }
 
     private var topStrip: some View {
@@ -132,12 +134,19 @@ struct SettleView: View {
             Spacer()
             Button {
                 Haptics.success()
+                showConfetti = true
                 withAnimation(.spring(response: 0.4)) { store.markPaid(s.id) }
             } label: {
-                Text("PAID").font(.system(size: 10, weight: .black, design: .monospaced)).foregroundStyle(.white)
-                    .padding(.horizontal, 10).padding(.vertical, 6)
-                    .background { Rectangle().fill(ChequeWave.positive) }
-                    .overlay { Rectangle().strokeBorder(ChequeWave.ink, lineWidth: 1) }
+                HStack(spacing: 4) {
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 10, weight: .black))
+                    Text("PAID")
+                        .font(.system(size: 10, weight: .black, design: .monospaced))
+                }
+                .foregroundStyle(.white)
+                .padding(.horizontal, 10).padding(.vertical, 6)
+                .background { Rectangle().fill(ChequeWave.positive) }
+                .overlay { Rectangle().strokeBorder(ChequeWave.ink, lineWidth: 1) }
             }
         }
         .padding(10)

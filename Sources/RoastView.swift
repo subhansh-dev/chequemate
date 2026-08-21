@@ -7,6 +7,7 @@ struct RoastView: View {
     @State private var tone: RoastTone = .roast
     @State private var output: RoastOutput?
     @State private var isThinking = false
+    @State private var showConfetti = false
 
     var body: some View {
         NavigationStack {
@@ -15,7 +16,11 @@ struct RoastView: View {
                     topStrip
                     tonePicker
                     if isThinking { thinkingPoster }
-                    else if let output { roastPoster(output) }
+                    else if let output {
+                        TiltCard {
+                            roastPoster(output)
+                        }
+                    }
                     else { placeholderPoster }
                     if output != nil && !isThinking {
                         GlassButton(title: "Another take", icon: "arrow.clockwise", variant: .secondary) { regenerate() }
@@ -29,6 +34,7 @@ struct RoastView: View {
             .navigationTitle("The Roast")
             .navigationBarTitleDisplayMode(.inline)
         }
+        .overlay { ConfettiBurst(trigger: $showConfetti) }
         .onAppear { if output == nil { think() } }
         .onChange(of: store.people) { regenerate() }
         .onChange(of: store.expenses) { regenerate() }
@@ -171,6 +177,7 @@ struct RoastView: View {
                 output = SassEngine.generate(people: store.people, expenses: store.expenses, settlements: store.settlements, currency: store.currency, tone: tone, seed: seed)
             }
             isThinking = false
+            showConfetti = true
         }
     }
 }

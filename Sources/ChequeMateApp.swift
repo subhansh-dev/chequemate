@@ -9,7 +9,7 @@ struct ChequeMateApp: App {
 
     var body: some Scene {
         WindowGroup {
-            MainTabView()
+            RootView()
                 .environmentObject(store)
         }
     }
@@ -193,5 +193,38 @@ struct MainTabView: View {
                 }
             }
             .ignoresSafeArea()
+    }
+}
+
+// MARK: - Root View (Boot → Login → App)
+
+struct RootView: View {
+    @AppStorage("isLoggedIn") private var isLoggedIn = false
+    @AppStorage("hasBooted") private var hasBooted = false
+    @State private var showBoot = true
+    @State private var showLogin = false
+
+    var body: some View {
+        ZStack {
+            if showBoot {
+                BootAnimationView()
+                    .onAppear {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 3.2) {
+                            withAnimation(.easeOut(duration: 0.4)) {
+                                showBoot = false
+                                if !isLoggedIn {
+                                    showLogin = true
+                                }
+                            }
+                        }
+                    }
+            } else if showLogin && !isLoggedIn {
+                LoginView()
+                    .transition(.move(edge: .trailing).combined(with: .opacity))
+            } else {
+                MainTabView()
+                    .transition(.opacity)
+            }
+        }
     }
 }
