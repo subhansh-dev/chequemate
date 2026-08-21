@@ -41,7 +41,7 @@ struct AnimatedCounter: View {
         velocity = 0
 
         timer = Timer.scheduledTimer(withTimeInterval: tickInterval, repeats: true) { _ in
-            step()
+            DispatchQueue.main.async { self.step() }
         }
         RunLoop.current.add(timer!, forMode: .common)
     }
