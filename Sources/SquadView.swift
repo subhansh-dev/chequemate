@@ -150,7 +150,7 @@ struct SquadView: View {
                     }.padding(.vertical, 4)
                 }
                 .onAppear { chipsAppeared = true }
-                .onChange(of: store.people.count) { _ in
+                .onChange(of: store.people.count) {
                     chipsAppeared = false
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
                         withAnimation { chipsAppeared = true }
@@ -281,9 +281,9 @@ struct AddExpenseSheet: View {
         var filtered = input.filter { $0.isNumber || $0 == "." || $0 == "," }
         let dots = filtered.filter { $0 == "." || $0 == "," }
         if dots.count > 1 {
-            let firstDotIndex = filtered.firstIndex { $0 == "." || $0 == "," }
-            if let idx = firstDotIndex {
-                filtered = String(filtered.prefix(through: idx)) + String(filtered.dropFirst(idx + 1).filter { $0 != "." && $0 != "," })
+            if let idx = filtered.firstIndex(of: ".") ?? filtered.firstIndex(of: ",") {
+                let pos = filtered.distance(from: filtered.startIndex, to: idx)
+                filtered = String(filtered.prefix(pos)) + String(filtered.dropFirst(pos + 1).filter { $0 != "." && $0 != "," })
             }
         }
         return filtered
@@ -304,9 +304,9 @@ struct AddExpenseSheet: View {
             .navigationTitle("NEW EXPENSE — 02").navigationBarTitleDisplayMode(.inline)
             .toolbar { ToolbarItem(placement: .topBarLeading) { Button("Cancel") { dismiss() }.foregroundStyle(ChequeWave.inkSoft).font(.system(.callout, design: .rounded, weight: .bold)) } }
             .onAppear { if payerID == nil { payerID = store.people.first?.id }; amountFocused = true }
-            .onChange(of: amountText) { newVal in
-                let sanitized = sanitizeAmount(newVal)
-                if sanitized != newVal { amountText = sanitized }
+            .onChange(of: amountText) {
+                let sanitized = sanitizeAmount(amountText)
+                if sanitized != amountText { amountText = sanitized }
             }
         }
         .presentationDetents([.medium, .large])
