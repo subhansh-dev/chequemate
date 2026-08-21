@@ -22,11 +22,9 @@ enum Haptics {
     static func tap() {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
     }
-
     static func heavy() {
         UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
     }
-
     static func success() {
         UINotificationFeedbackGenerator().notificationOccurred(.success)
     }
@@ -45,44 +43,20 @@ final class ChequeMateStore: ObservableObject {
     private let saveKey = "chequemate.state.v1"
 
     private let palette: [Color] = [
-        ChequeWave.peach, ChequeWave.mint, ChequeWave.coral, ChequeWave.blush, ChequeWave.sand
+        ChequeWave.lavender, ChequeWave.mint, ChequeWave.peach,
+        ChequeWave.sky, ChequeWave.blush
     ]
 
-    init() {
-        load()
-    }
+    init() { load() }
 
-    var totalSpent: Double {
-        expenses.reduce(0) { $0 + $1.amount }
-    }
-
-    var perHead: Double {
-        people.isEmpty ? 0 : totalSpent / Double(people.count)
-    }
-
-    var balances: [Balance] {
-        SettlementEngine.balances(people: people, expenses: expenses)
-    }
-
-    var pendingSettlements: [Settlement] {
-        settlements.filter { !$0.isPaid }
-    }
-
-    var settledSettlements: [Settlement] {
-        settlements.filter { $0.isPaid }
-    }
-
-    var hasSettlements: Bool {
-        !settlements.isEmpty
-    }
-
-    var allSettled: Bool {
-        !settlements.isEmpty && pendingSettlements.isEmpty
-    }
-
-    var canSettle: Bool {
-        people.count >= 2 && !expenses.isEmpty
-    }
+    var totalSpent: Double { expenses.reduce(0) { $0 + $1.amount } }
+    var perHead: Double { people.isEmpty ? 0 : totalSpent / Double(people.count) }
+    var balances: [Balance] { SettlementEngine.balances(people: people, expenses: expenses) }
+    var pendingSettlements: [Settlement] { settlements.filter { !$0.isPaid } }
+    var settledSettlements: [Settlement] { settlements.filter { $0.isPaid } }
+    var hasSettlements: Bool { !settlements.isEmpty }
+    var allSettled: Bool { !settlements.isEmpty && pendingSettlements.isEmpty }
+    var canSettle: Bool { people.count >= 2 && !expenses.isEmpty }
 
     func tint(for person: Person) -> Color {
         palette[person.tintIndex % palette.count]
@@ -121,11 +95,7 @@ final class ChequeMateStore: ObservableObject {
     func addExpense(payerID: UUID, amount: Double, note: String) {
         guard amount > 0 else { return }
         let cleanNote = note.trimmingCharacters(in: .whitespacesAndNewlines)
-        expenses.append(Expense(
-            payerID: payerID,
-            amount: amount,
-            note: cleanNote.isEmpty ? "the bill" : cleanNote
-        ))
+        expenses.append(Expense(payerID: payerID, amount: amount, note: cleanNote.isEmpty ? "the bill" : cleanNote))
         invalidateSettlements()
         save()
     }
@@ -165,20 +135,9 @@ final class ChequeMateStore: ObservableObject {
         save()
     }
 
-    func clearAll() {
-        people = []
-        expenses = []
-        settlements = []
-        save()
-    }
-
     private func invalidateSettlements() {
-        if !settlements.isEmpty {
-            settlements = []
-        }
+        if !settlements.isEmpty { settlements = [] }
     }
-
-    // MARK: - Persistence
 
     private struct SavedState: Codable {
         var people: [Person]
@@ -188,12 +147,7 @@ final class ChequeMateStore: ObservableObject {
     }
 
     private func save() {
-        let state = SavedState(
-            people: people,
-            expenses: expenses,
-            settlements: settlements,
-            currency: currency
-        )
+        let state = SavedState(people: people, expenses: expenses, settlements: settlements, currency: currency)
         if let data = try? JSONEncoder().encode(state) {
             UserDefaults.standard.set(data, forKey: saveKey)
         }
@@ -209,26 +163,35 @@ final class ChequeMateStore: ObservableObject {
     }
 }
 
-// MARK: - Main Tab View
+// MARK: - Tab View — Poster shell (ink tab bar on paper)
 
 struct MainTabView: View {
     @EnvironmentObject var store: ChequeMateStore
 
     var body: some View {
-        ZStack {
-            MeshBackground()
-            TabView(selection: $store.selectedTab) {
-                SquadView()
-                    .tabItem { Label("Squad", systemImage: "person.3.fill") }
-                    .tag(0)
-                SettleView()
-                    .tabItem { Label("Settle", systemImage: "banknote.fill") }
-                    .tag(1)
-                RoastView()
-                    .tabItem { Label("Roast", systemImage: "flame.fill") }
-                    .tag(2)
+        MeshBackground()
+            .overlay {
+                TabView(selection: $store.selectedTab) {
+                    SquadView()
+                        .tabItem { Label("Squad", systemImage: "person.3.fill") }
+                        .tag(0)
+                    SettleView()
+                        .tabItem { Label("Settle", systemImage: "arrow.left.arrow.right") }
+                        .tag(1)
+                    RoastView()
+                        .tabItem { Label("Roast", systemImage: "flame.fill") }
+                        .tag(2)
+                }
+                .tint(ChequeWave.blueprint)
+                .onAppear {
+                    let a = UITabBarAppearance()
+                    a.configureWithOpaqueBackground()
+                    a.backgroundColor = UIColor(Color.white)
+                    a.shadowColor = UIColor(ChequeWave.ink.opacity(0.12))
+                    UITabBar.appearance().standardAppearance = a
+                    UITabBar.appearance().scrollEdgeAppearance = a
+                }
             }
-            .tint(ChequeWave.peach)
-        }
+            .ignoresSafeArea()
     }
 }
